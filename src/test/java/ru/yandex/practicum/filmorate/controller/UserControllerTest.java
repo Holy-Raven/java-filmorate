@@ -49,7 +49,7 @@ class UserControllerTest {
                 MyValidationException.class,
                 () -> {
                     userController.create(user);
-                    throw new MyValidationException("Ваша электронная почта не может быть пустой и должна содержать символ @");
+                    throw new MyValidationException("Your email cannot be empty and must contain the character @");
                 }
         );
 
@@ -62,7 +62,7 @@ class UserControllerTest {
                 MyValidationException.class,
                 () -> {
                     userController.create(user2);
-                    throw new MyValidationException("Ваша электронная почта не может быть пустой и должна содержать символ @");
+                    throw new MyValidationException("Your email cannot be empty and must contain the character @");
                 }
         );
 
@@ -81,7 +81,7 @@ class UserControllerTest {
                 MyValidationException.class,
                 () -> {
                     userController.create(user);
-                    throw new MyValidationException("Ваш логин не может быть пустым или содержать пробелы.");
+                    throw new MyValidationException("Your login cannot be empty or contain spaces.");
                 }
         );
 
@@ -94,7 +94,7 @@ class UserControllerTest {
                 MyValidationException.class,
                 () -> {
                     userController.create(user2);
-                    throw new MyValidationException("Ваш логин не может быть пустым или содержать пробелы.");
+                    throw new MyValidationException("Your login cannot be empty or contain spaces.");
                 }
         );
 
@@ -127,7 +127,7 @@ class UserControllerTest {
                 MyValidationException.class,
                 () -> {
                     userController.create(user);
-                    throw new MyValidationException("Дата рождения не может быть в будущем.");
+                    throw new MyValidationException("The date of birth cannot be in the future.");
                 }
         );
 

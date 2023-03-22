@@ -15,16 +15,16 @@ public class Film {
 
     private final Integer id;
 
-    @NotNull(message = "Название фильма не может быть пустым")
-    @NotBlank(message = "Название фильма не может быть пустым")
+    @NotNull(message = "Name of the film cannot be empty")
+    @NotBlank(message = "Name of the film cannot be empty")
     private final String name;
 
-    @Size(max=200, message = "Максимальная длина описания не должна превышать 200 символов")
+    @Size(max=200, message = "The maximum length of the description should not exceed 200 characters")
     private final String description;
 
     private final LocalDate releaseDate;
 
-    @Positive(message = "Продолжительность фильма должна быть положительной")
+    @Positive(message = "The duration of the film should be positive")
     private final Integer duration;
 
 }

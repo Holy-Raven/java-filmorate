@@ -1,10 +1,7 @@
 
 package ru.yandex.practicum.filmorate.controller;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
@@ -18,10 +15,10 @@ import javax.validation.Valid;
 
 
 @RestController
+@Slf4j
 @RequestMapping("/films")
 public class FilmController {
 
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     private static final LocalDate BEGIN_TIME = LocalDate.of(1895,  Month.DECEMBER,28);
     public final Map<Integer, Film> films = new HashMap<>();
 
@@ -46,34 +43,34 @@ public class FilmController {
 
         //раньше было так (сняла комментарии, что бы тесты написать)
         if (film.getName() == null || film.getName().isBlank()) {
-            log.error("Название фильма не может быть пустым");
-            throw new MyValidationException("Название фильма не может быть пустым");
+            log.error("Name of the film cannot be empty");
+            throw new MyValidationException("Name of the film cannot be empty");
 
         } else if (film.getDescription() != null && film.getDescription().length() > 200) {
-            log.error("Максимальная длина описания не должна превышать 200 символов");
-            throw new MyValidationException("Максимальная длина описания не должна превышать 200 символов");
+            log.error("The maximum length of the description should not exceed 200 characters");
+            throw new MyValidationException("The maximum length of the description should not exceed 200 characters");
 
         } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(BEGIN_TIME)) {
-            log.error("Дата релиза может быть не раньше 28 декабря 1895 года");
-            throw new MyValidationException("Дата релиза может быть не раньше 28 декабря 1895 года");
+            log.error("The release date may not be earlier than December 28, 1895");
+            throw new MyValidationException("The release date may not be earlier than December 28, 1895");
 
         } else if (film.getDuration() != null && film.getDuration() <= 0) {
-            log.error("Продолжительность фильма должна быть положительной");
-            throw new MyValidationException("Продолжительность фильма должна быть положительной");
+            log.error("The duration of the film should be positive");
+            throw new MyValidationException("The duration of the film should be positive");
 
         }
         // без всего того что выше в postman и так работает
 
 
         if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(BEGIN_TIME)) {
-            log.error("Дата релиза может быть не раньше 28 декабря 1895 года");
-            throw new MyValidationException("Дата релиза может быть не раньше 28 декабря 1895 года");
+            log.error("The release date may not be earlier than December 28, 1895");
+            throw new MyValidationException("The release date may not be earlier than December 28, 1895");
         }
 
         film = new Film(getNewId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration());
 
         films.put(film.getId(), film);
-        log.info("Добавлен Фильм: {}", film.getName());
+        log.info("Added Film: {}", film.getName());
         return film;
     }
 
@@ -84,11 +81,11 @@ public class FilmController {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else {
-            log.error("Такого фильма нет в нашем списке фильмов");
-            throw new MyValidationException("Такого фильма нет в нашем списке фильмов");
+            log.error("There is no such film in our list of films");
+            throw new MyValidationException("There is no such film in our list of films");
         }
 
-        log.info("Обновлено описание фильма: {}", film.getName());
+        log.info("Updated movie description: {}", film.getName());
         return film;
     }
 

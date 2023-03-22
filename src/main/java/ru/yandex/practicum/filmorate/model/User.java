@@ -22,11 +22,11 @@ public class User {
 
     private final String name;
 
-    @NotNull(message = "login не может быть пустым")
-    @NotBlank(message = "login не может быть пустым")
+    @NotNull(message = "Your login cannot be empty or contain spaces.")
+    @NotBlank(message = "Your login cannot be empty or contain spaces.")
     private final String login;
 
-    @Past(message = "Дата рождения не может быть в будущем.")
+    @Past(message = "The date of birth cannot be in the future.")
     private final LocalDate birthday;
 
 }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import ru.yandex.practicum.filmorate.exception.MyValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -46,7 +47,7 @@ class FilmControllerTest {
                 MyValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("Название фильма не может быть пустым");
+                    throw new MyValidationException("Name of the film cannot be empty");
                 }
         );
 
@@ -67,7 +68,7 @@ class FilmControllerTest {
                 MyValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("Максимальная длина описания не должна превышать 200 символов");
+                    throw new MyValidationException("The maximum length of the description should not exceed 200 characters");
                 }
         );
 
@@ -86,7 +87,7 @@ class FilmControllerTest {
                 MyValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("Дата релиза может быть не раньше 28 декабря 1895 года");
+                    throw new MyValidationException("The release date may not be earlier than December 28, 1895");
                 }
         );
 
@@ -105,7 +106,7 @@ class FilmControllerTest {
                 MyValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("Продолжительность фильма должна быть положительной");
+                    throw new MyValidationException("The duration of the film should be positive");
                 }
         );
 

@@ -1,9 +1,7 @@
 
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -15,10 +13,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.Valid;
 
 @RestController
+@Slf4j
 @RequestMapping("/users")
 public class UserController {
 
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     public final Map<Integer, User> users = new HashMap<>();
 
     private static int newId = 1;
@@ -43,22 +41,22 @@ public class UserController {
         LocalDate currentTime = LocalDate.now();
 
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.error("Ваша электронная почта не может быть пустой и должна содержать символ @");
-            throw new MyValidationException("Ваша электронная почта не может быть пустой и должна содержать символ @");
+            log.error("Your email cannot be empty and must contain the character @");
+            throw new MyValidationException("Your email cannot be empty and must contain the character @");
 
         } else if (user.getLogin() == null || user.getEmail().isBlank() || user.getLogin().contains(" ")) {
-            log.error("Ваш логин не может быть пустым или содержать пробелы.");
-            throw new MyValidationException("Ваш логин не может быть пустым или содержать пробелы.");
+            log.error("Your login cannot be empty or contain spaces.");
+            throw new MyValidationException("Your login cannot be empty or contain spaces.");
 
         }  else if (user.getBirthday().isAfter(currentTime)) {
-            log.error("Дата рождения не может быть в будущем.");
-            throw new MyValidationException("Дата рождения не может быть в будущем.");
+            log.error("The date of birth cannot be in the future.");
+            throw new MyValidationException("The date of birth cannot be in the future.");
 
         }
         // без всего того что выше в postman и так работает
 
         if (user.getName() == null || user.getName().isBlank()) {
-            log.info("Имя для отображения не может быть пустым. Вам назначено имя: {}", user.getLogin());
+            log.info("The name to display cannot be empty. You have been assigned a name: {}", user.getLogin());
             user = new User(getNewId(), user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
 
         } else {
@@ -66,7 +64,7 @@ public class UserController {
         }
 
         users.put(user.getId(), user);
-        log.info("Добавлен юзер: {}", user.getLogin());
+        log.info("User added : {}", user.getLogin());
         return user;
     }
 
@@ -76,10 +74,10 @@ public class UserController {
         if (users.containsKey(user.getId())){
             users.put(user.getId(), user);
         } else {
-            log.error("Такого юзера нет в нашем списке юзеров");
-            throw new MyValidationException("Такого юзера нет в нашем списке юзеров");
+            log.error("There is no such user in our list of users");
+            throw new MyValidationException("There is no such user in our list of users");
         }
-        log.info("Обновлены данные юзера: {}", user.getLogin());
+        log.info("User data updated: {}", user.getLogin());
         return user;
     }
 }
