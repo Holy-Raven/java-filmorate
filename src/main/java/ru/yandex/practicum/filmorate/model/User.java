@@ -15,9 +15,9 @@ public class User {
 
     private final Integer id;
 
-    @NotNull(message = "email не может быть пустым")
-    @NotBlank(message = "email не может быть пустым")
-    @Email(message = "email должен содержать @")
+    @NotNull(message = "email cannot be empty")
+    @NotBlank(message = "email cannot be empty")
+    @Email(message = "email must contain the character @")
     private final String email;
 
     private final String name;
