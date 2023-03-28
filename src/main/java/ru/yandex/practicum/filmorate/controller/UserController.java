@@ -42,7 +42,9 @@ public class UserController {
         return userService.update(user);
     }
 
-
-
+    @GetMapping("/{userId}")
+    public User findUserById(@PathVariable("userId") String userId){
+        return userService.findUserById(userId);
+    }
 
 }

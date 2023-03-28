@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -91,5 +92,31 @@ public class UserService implements UserServiceInterface {
         }
         log.info("User deleted: {}", user.getLogin());
         return user;
+    }
+
+    @Override
+    public User findUserById(String userId) {
+
+        long id;
+
+        if (userId == null || userId.isBlank()){
+            throw new MyValidationException("The id must not be empty");
+        }
+
+        try {
+            id = Long.parseLong(userId);
+        } catch (NumberFormatException e){
+            throw new MyValidationException("The id must be a number");
+        }
+
+        if (id <= 0){
+            throw new MyValidationException("The id must be positive");
+        }
+
+        if (userStorage.allUsers().containsKey(id)){
+            return userStorage.allUsers().get(id);
+        } else {
+            throw new MyValidationException("There is no such user in our list of users");
+        }
     }
 }

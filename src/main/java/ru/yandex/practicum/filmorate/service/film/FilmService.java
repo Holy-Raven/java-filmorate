@@ -5,17 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.MyValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
+import java.util.Optional;
 
 
 @Service
 @Slf4j
-public class FilmService implements FilmServiceInterface{
+public class FilmService implements FilmServiceInterface {
 
     FilmStorage filmStorage;
 
@@ -98,6 +100,32 @@ public class FilmService implements FilmServiceInterface{
         log.info("Movie deleted {}", film.getName());
         return film;
 
+    }
+
+    @Override
+    public Film findFilmById(String filmId) {
+
+        long id;
+
+        if (filmId == null || filmId.isBlank()){
+            throw new MyValidationException("The id must not be empty");
+        }
+
+        try {
+            id = Long.parseLong(filmId);
+        } catch (NumberFormatException e){
+            throw new MyValidationException("The id must be a number");
+        }
+
+        if (id <= 0){
+            throw new MyValidationException("The id must be positive");
+        }
+
+        if (filmStorage.allFilms().containsKey(id)){
+            return filmStorage.allFilms().get(id);
+        } else {
+            throw new MyValidationException("There is no such film in our list of films");
+        }
     }
 
 }
