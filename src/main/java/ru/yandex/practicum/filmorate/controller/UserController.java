@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.service.user.UserServiceInterface;
 
 import javax.validation.Valid;
 
@@ -16,7 +17,7 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceInterface userService;
 
     @Autowired
     public UserController(UserService userService) {
