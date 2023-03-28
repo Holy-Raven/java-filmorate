@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,13 +14,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Map<Long, Film> films = new HashMap<>();
 
     @Override
-    public Collection<Film> allFilms() {
-        return films.values();
-    }
-
-    @Override
-    public Collection<Long> keyFilms() {
-        return films.keySet();
+    public Map<Long, Film> allFilms() {
+        return films;
     }
 
     @Override

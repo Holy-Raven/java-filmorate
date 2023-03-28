@@ -34,7 +34,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public Collection<User> findAll() {
 
-        return userStorage.allUsers();
+        return userStorage.allUsers().values();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User update(User user) {
 
-        if (userStorage.keyUsers().contains(user.getId())){
+        if (userStorage.allUsers().containsKey(user.getId())){
             userStorage.put(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -83,7 +83,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User delete(User user) {
 
-        if (userStorage.keyUsers().contains(user.getId())){
+        if (userStorage.allUsers().containsKey(user.getId())){
             userStorage.del(user);
         } else {
             log.error("There is no such user in our list of users");

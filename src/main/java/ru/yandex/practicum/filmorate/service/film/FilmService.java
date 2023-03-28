@@ -37,7 +37,7 @@ public class FilmService implements FilmServiceInterface{
 
     @Override
     public Collection<Film> findAll() {
-        return filmStorage.allFilms();
+        return filmStorage.allFilms().values();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class FilmService implements FilmServiceInterface{
     @Override
     public Film update(Film film) {
 
-        if (filmStorage.keyFilms().contains(film.getId())) {
+        if (filmStorage.allFilms().containsKey(film.getId())) {
             filmStorage.put(film);
         } else {
             log.error("There is no such film in our list of films");
@@ -88,7 +88,7 @@ public class FilmService implements FilmServiceInterface{
     @Override
     public Film delete(Film film) {
 
-        if (filmStorage.keyFilms().contains(film.getId())) {
+        if (filmStorage.allFilms().containsKey(film.getId())) {
             filmStorage.del(film);
         } else {
             log.error("There is no such film in our list of films");
