@@ -9,11 +9,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class Film {
 
-    private final Integer id;
+    private final Long id;
+
+    private List<Long> likes = new ArrayList<>();
 
     @NotNull(message = "Name of the film cannot be empty")
     @NotBlank(message = "Name of the film cannot be empty")
