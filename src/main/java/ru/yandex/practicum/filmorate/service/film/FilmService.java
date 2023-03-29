@@ -5,14 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.MyValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.util.LikesComparator;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -30,7 +29,6 @@ public class FilmService implements FilmServiceInterface {
     public static void setNewId(int newId) {
         FilmService.newId = newId;
     }
-
 
     @Autowired
     FilmService(InMemoryFilmStorage filmStorage){
@@ -105,27 +103,95 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public Film findFilmById(String filmId) {
 
-        long id;
-
-        if (filmId == null || filmId.isBlank()){
-            throw new MyValidationException("The id must not be empty");
-        }
-
-        try {
-            id = Long.parseLong(filmId);
-        } catch (NumberFormatException e){
-            throw new MyValidationException("The id must be a number");
-        }
-
-        if (id <= 0){
-            throw new MyValidationException("The id must be positive");
-        }
+        long id = parseStringInLong(filmId);
 
         if (filmStorage.allFilms().containsKey(id)){
             return filmStorage.allFilms().get(id);
         } else {
             throw new MyValidationException("There is no such film in our list of films");
         }
+    }
+
+    @Override
+    public List<Film> sortFilm(String count) {
+
+        long a;
+
+        if (count == null || count.isBlank() ) {
+            a = 10;
+        } else {
+            a = parseStringInLong(count);
+        }
+
+        List<Film> filmList = new ArrayList<>(filmStorage.allFilms().values());
+        Comparator<Film> likesComparator = new LikesComparator();
+        filmList.sort(likesComparator);
+
+        List<Film> newSortFilms = new ArrayList<>();
+
+        while (a >= 0) {
+
+            for (Film film : filmList) {
+                newSortFilms.add(film);
+                a--;
+            }
+        }
+
+    return newSortFilms;
+
+    }
+
+    @Override
+    public Film addLikeFilm(String film, String user) {
+
+        long filmId = parseStringInLong(film);
+        long userId = parseStringInLong(user);
+
+        if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
+            log.error("Пользователь уже поставил лайк этому фильму");
+            throw new MyValidationException("Пользователь уже поставил лайк этому фильму");
+        }
+
+        findFilmById(film).getLikes().add(userId);
+        log.info("User №" + userId + " поставил лайк фильму №" + filmId);
+
+        return filmStorage.allFilms().get(filmId);
+    }
+
+    @Override
+    public Film delLikeFilm(String film, String user) {
+
+        long filmId = parseStringInLong(film);
+        long userId = parseStringInLong(user);
+
+        if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
+            log.error("Пользователь не ставил лайк этому фильму");
+            throw new MyValidationException("Пользователь не ставил лайк этому фильму");
+        }
+
+        findFilmById(film).getLikes().remove(userId);
+        log.info("User №" + userId + " удалили лайк с фильма №" + filmId);
+
+        return filmStorage.allFilms().get(filmId);
+    }
+
+    public Long parseStringInLong (String str){
+
+        long a;
+
+        try {
+            a = Long.parseLong(str);
+        } catch (NumberFormatException e){
+            log.error("\"" + str + "\" must be a number");
+            throw new MyValidationException("\"" + str + "\" must be a number");
+        }
+
+        if (a <= 0){
+            log.error("\"" + str + "\" must be positive");
+            throw new MyValidationException("\"" + str + "\" must be positive");
+        }
+
+        return a;
     }
 
 }

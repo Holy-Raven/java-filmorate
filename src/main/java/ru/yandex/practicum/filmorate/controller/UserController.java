@@ -42,6 +42,12 @@ public class UserController {
         return userService.update(user);
     }
 
+    // удаление пользователя.
+    @DeleteMapping
+    public User del(@RequestBody User user) {
+        return userService.delete(user);
+    }
+
     @GetMapping("/{userId}")
     public User findUserById(@PathVariable("userId") String userId){
         return userService.findUserById(userId);

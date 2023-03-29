@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 public interface FilmServiceInterface {
 
@@ -17,5 +15,11 @@ public interface FilmServiceInterface {
     Film delete(Film film);
 
     Film findFilmById(String filmId);
+
+    Film addLikeFilm(String film, String user);
+
+    Film delLikeFilm(String film, String user);
+
+    List<Film> sortFilm(String count);
 
 }

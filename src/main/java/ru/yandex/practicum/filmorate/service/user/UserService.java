@@ -7,11 +7,10 @@ import ru.yandex.practicum.filmorate.exception.MyValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -119,4 +118,100 @@ public class UserService implements UserServiceInterface {
             throw new MyValidationException("There is no such user in our list of users");
         }
     }
+
+    @Override
+    public User addFriends (String user1, String user2) {
+
+        long user1Id = parseStringInLong(user1);
+        long user2Id = parseStringInLong(user2);
+
+        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
+            log.error("User №" + user2Id + " и User №" + user1Id + " уже друзья");
+            throw new MyValidationException("User №" + user2Id + " и User №" + user1Id + " уже друзья");
+        }
+
+        log.info("User №" + user2Id + "добавлен в списках друзей User №" + user1Id);
+        userStorage.allUsers().get(user1Id).getFriends().add(user2Id);
+
+        log.info("User №" + user1Id + "добавлен в списках друзей User №" + user2Id);
+        userStorage.allUsers().get(user2Id).getFriends().add(user1Id);
+
+        log.info("User №" + user1Id + "и User №" + user2Id + "теперь друзья");
+
+        return userStorage.allUsers().get(user1Id);
+    }
+
+    @Override
+    public User delFriends (String user1, String user2) {
+
+        long user1Id = parseStringInLong(user1);
+        long user2Id = parseStringInLong(user2);
+
+        if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
+            log.error("User №" + user2Id + " и User №" + user1Id + " не друзья");
+            throw new MyValidationException("User №" + user2Id + " и User №" + user1Id + " не друзья");
+        }
+
+        log.info("User №" + user2Id + "удален из списка друзей User №" + user1Id);
+        userStorage.allUsers().get(user1Id).getFriends().remove(user2Id);
+
+        log.info("User №" + user1Id + "удален из списка друзей User №" + user2Id);
+        userStorage.allUsers().get(user2Id).getFriends().remove(user1Id);
+
+        log.info("User №" + user1Id + "и User №" + user2Id + " теперь не друзья");
+
+        return userStorage.allUsers().get(user1Id);
+    }
+
+    @Override
+    public List<User> friendsList (String user) {
+
+        long userId = parseStringInLong(user);
+
+        List<User> friendsList = new ArrayList<>();
+
+        for (Long friend : userStorage.allUsers().get(userId).getFriends()) {
+            friendsList.add(userStorage.allUsers().get(friend));
+        }
+
+        log.info("Список друзей User №" + userId);
+        return friendsList;
+    }
+
+    @Override
+    public List<User> commonFriends(String user1, String user2) {
+
+        long user1Id = parseStringInLong(user1);
+        long user2Id = parseStringInLong(user2);
+
+        List<User> commonFriends = new ArrayList<>();
+
+        for (Long friend : userStorage.allUsers().get(user1Id).getFriends()) {
+            if (userStorage.allUsers().get(user2Id).getFriends().contains(friend)) {
+                commonFriends.add(userStorage.allUsers().get(friend));
+            }
+        }
+        log.info("Список общих друзей User №" + user1Id + "и User №" + user2Id + "готов");
+        return commonFriends;
+    }
+
+    public Long parseStringInLong (String str){
+
+        long a;
+
+        try {
+            a = Long.parseLong(str);
+        } catch (NumberFormatException e){
+            log.error("\"" + str + "\" must be a number");
+            throw new MyValidationException("\"" + str + "\" must be a number");
+        }
+
+        if (a <= 0){
+            log.error("\"" + str + "\" must be positive");
+            throw new MyValidationException("\"" + str + "\" must be positive");
+        }
+
+        return a;
+    }
+
 }
