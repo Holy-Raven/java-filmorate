@@ -53,4 +53,24 @@ public class FilmController {
         return filmService.findFilmById(filmId);
     }
 
+    //  пользователь ставит лайк фильму
+    @PutMapping("/{id}/like/{userId}")
+    public Film addLike(@PathVariable("id") String id,
+                        @PathVariable("userId") String userId) {
+        return filmService.addLikeFilm(id, userId);
+    }
+
+    //  пользователь удаляет лайк
+    @DeleteMapping("/{id}/like/{userId}")
+    public Film delLike(@PathVariable("id") String id,
+                        @PathVariable("userId") String userId) {
+        return filmService.delLikeFilm(id, userId);
+    }
+
+    // возвращает список из первых count фильмов по количеству лайков
+    @GetMapping("/popular?count={count}")
+    public List<Film> popularFilmList(@RequestParam(defaultValue = "test") String count){
+        return filmService.sortFilm(count);
+    }
+
 }

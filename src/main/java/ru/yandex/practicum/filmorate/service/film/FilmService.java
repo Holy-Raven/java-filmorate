@@ -117,11 +117,13 @@ public class FilmService implements FilmServiceInterface {
 
         long a;
 
-        if (count == null || count.isBlank() ) {
-            a = 10;
-        } else {
-            a = parseStringInLong(count);
-        }
+//        if (count == null || count.isBlank() ) {
+//            a = 10;
+//        } else {
+//            a = parseStringInLong(count);
+//        }
+
+        a = parseStringInLong(count);
 
         List<Film> filmList = new ArrayList<>(filmStorage.allFilms().values());
         Comparator<Film> likesComparator = new LikesComparator();
