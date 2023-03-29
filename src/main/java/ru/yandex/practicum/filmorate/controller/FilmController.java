@@ -48,7 +48,7 @@ public class FilmController {
         return filmService.delete(film);
     }
 
-    @GetMapping("/{filmId}")
+    @GetMapping("/{Id}")
     public Film findFilmById(@PathVariable("filmId") String filmId){
         return filmService.findFilmById(filmId);
     }
@@ -68,7 +68,7 @@ public class FilmController {
     }
 
     // возвращает список из первых count фильмов по количеству лайков
-    @GetMapping("/popular?count={count}")
+    @GetMapping("/popular")
     public List<Film> popularFilmList(@RequestParam(defaultValue = "10") String count){
         return filmService.sortFilm(count);
     }

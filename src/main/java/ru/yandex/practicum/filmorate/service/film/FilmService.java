@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.MyValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.film.util.LikesComparator;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -115,32 +115,15 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public List<Film> sortFilm(String count) {
 
-        long a;
+        long size = parseStringInLong(count);
 
-//        if (count == null || count.isBlank() ) {
-//            a = 10;
-//        } else {
-//            a = parseStringInLong(count);
-//        }
-
-        a = parseStringInLong(count);
-
-        List<Film> filmList = new ArrayList<>(filmStorage.allFilms().values());
-        Comparator<Film> likesComparator = new LikesComparator();
-        filmList.sort(likesComparator);
-
-        List<Film> newSortFilms = new ArrayList<>();
-
-        while (a >= 0) {
-
-            for (Film film : filmList) {
-                newSortFilms.add(film);
-                a--;
-            }
-        }
-
-    return newSortFilms;
-
+        log.info("Cписок фильмов отсортированный по их популярности");
+        return filmStorage.allFilms().values()
+                                     .stream()
+                                     .sorted((film1, film2) -> film2.getLikes().size()
+                                                             - film1.getLikes().size())
+                                     .limit(size)
+                                     .collect(Collectors.toList());
     }
 
     @Override
