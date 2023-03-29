@@ -49,8 +49,8 @@ public class FilmController {
     }
 
     @GetMapping("/{Id}")
-    public Film findFilmById(@PathVariable("filmId") String filmId){
-        return filmService.findFilmById(filmId);
+    public Film findFilmById(@PathVariable("Id") String Id){
+        return filmService.findFilmById(Id);
     }
 
     //  пользователь ставит лайк фильму
