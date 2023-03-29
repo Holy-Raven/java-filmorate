@@ -69,7 +69,7 @@ public class FilmController {
 
     // возвращает список из первых count фильмов по количеству лайков
     @GetMapping("/popular?count={count}")
-    public List<Film> popularFilmList(@RequestParam(defaultValue = "test") String count){
+    public List<Film> popularFilmList(@RequestParam(defaultValue = "10") String count){
         return filmService.sortFilm(count);
     }
 
