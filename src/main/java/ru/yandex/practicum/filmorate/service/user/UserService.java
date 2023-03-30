@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.MyValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -44,15 +45,15 @@ public class UserService implements UserServiceInterface {
 
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Your email cannot be empty and must contain the character @");
-            throw new MyValidationException("Your email cannot be empty and must contain the character @");
+            throw new ValidationException("Your email cannot be empty and must contain the character @");
 
         } else if (user.getLogin() == null || user.getEmail().isBlank() || user.getLogin().contains(" ")) {
             log.error("Your login cannot be empty or contain spaces.");
-            throw new MyValidationException("Your login cannot be empty or contain spaces.");
+            throw new ValidationException("Your login cannot be empty or contain spaces.");
 
         }  else if (user.getBirthday().isAfter(currentTime)) {
             log.error("The date of birth cannot be in the future.");
-            throw new MyValidationException("The date of birth cannot be in the future.");
+            throw new ValidationException("The date of birth cannot be in the future.");
         }
 
         if (user.getName() == null || user.getName().isBlank()) {
@@ -74,7 +75,7 @@ public class UserService implements UserServiceInterface {
             userStorage.put(user);
         } else {
             log.error("There is no such user in our list of users");
-            throw new MyValidationException("There is no such user in our list of users");
+            throw new NotFoundException("There is no such user in our list of users");
         }
         log.info("User data updated: {}", user.getLogin());
         return user;
@@ -87,7 +88,7 @@ public class UserService implements UserServiceInterface {
             userStorage.del(user);
         } else {
             log.error("There is no such user in our list of users");
-            throw new MyValidationException("There is no such user in our list of users");
+            throw new NotFoundException("There is no such user in our list of users");
         }
         log.info("User deleted: {}", user.getLogin());
         return user;
@@ -99,23 +100,23 @@ public class UserService implements UserServiceInterface {
         long id;
 
         if (userId == null || userId.isBlank()){
-            throw new MyValidationException("The id must not be empty");
+            throw new ValidationException("The id must not be empty");
         }
 
         try {
             id = Long.parseLong(userId);
         } catch (NumberFormatException e){
-            throw new MyValidationException("The id must be a number");
+            throw new ValidationException("The id must be a number");
         }
 
         if (id <= 0){
-            throw new MyValidationException("The id must be positive");
+            throw new ValidationException("The id must be positive");
         }
 
         if (userStorage.allUsers().containsKey(id)){
             return userStorage.allUsers().get(id);
         } else {
-            throw new MyValidationException("There is no such user in our list of users");
+            throw new NotFoundException("There is no such user in our list of users");
         }
     }
 
@@ -127,7 +128,7 @@ public class UserService implements UserServiceInterface {
 
         if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
             log.error("User №" + user2Id + " и User №" + user1Id + " уже друзья");
-            throw new MyValidationException("User №" + user2Id + " и User №" + user1Id + " уже друзья");
+            throw new RuntimeException("User №" + user2Id + " и User №" + user1Id + " уже друзья");
         }
 
         log.info("User №" + user2Id + "добавлен в списках друзей User №" + user1Id);
@@ -149,7 +150,7 @@ public class UserService implements UserServiceInterface {
 
         if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
             log.error("User №" + user2Id + " и User №" + user1Id + " не друзья");
-            throw new MyValidationException("User №" + user2Id + " и User №" + user1Id + " не друзья");
+            throw new RuntimeException("User №" + user2Id + " и User №" + user1Id + " не друзья");
         }
 
         log.info("User №" + user2Id + "удален из списка друзей User №" + user1Id);
@@ -203,12 +204,12 @@ public class UserService implements UserServiceInterface {
             a = Long.parseLong(str);
         } catch (NumberFormatException e){
             log.error("\"" + str + "\" must be a number");
-            throw new MyValidationException("\"" + str + "\" must be a number");
+            throw new ValidationException("\"" + str + "\" must be a number");
         }
 
         if (a <= 0){
             log.error("\"" + str + "\" must be positive");
-            throw new MyValidationException("\"" + str + "\" must be positive");
+            throw new NotFoundException("\"" + str + "\" must be positive");
         }
 
         return a;

@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.service.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.MyValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
@@ -45,23 +46,23 @@ public class FilmService implements FilmServiceInterface {
 
         if (film.getName() == null || film.getName().isBlank()) {
             log.error("Name of the film cannot be empty");
-            throw new MyValidationException("Name of the film cannot be empty");
+            throw new ValidationException("Name of the film cannot be empty");
 
         } else if (film.getDescription() != null && film.getDescription().length() > 200) {
             log.error("The maximum length of the description should not exceed 200 characters");
-            throw new MyValidationException("The maximum length of the description should not exceed 200 characters");
+            throw new ValidationException("The maximum length of the description should not exceed 200 characters");
 
         } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(BEGIN_TIME)) {
             log.error("The release date may not be earlier than December 28, 1895");
-            throw new MyValidationException("The release date may not be earlier than December 28, 1895");
+            throw new ValidationException("The release date may not be earlier than December 28, 1895");
 
         } else if (film.getDuration() != null && film.getDuration() <= 0) {
             log.error("The duration of the film should be positive");
-            throw new MyValidationException("The duration of the film should be positive");
+            throw new ValidationException("The duration of the film should be positive");
 
         } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(BEGIN_TIME)) {
             log.error("The release date may not be earlier than December 28, 1895");
-            throw new MyValidationException("The release date may not be earlier than December 28, 1895");
+            throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
         film = new Film(getNewId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration());
@@ -77,7 +78,7 @@ public class FilmService implements FilmServiceInterface {
             filmStorage.put(film);
         } else {
             log.error("There is no such film in our list of films");
-            throw new MyValidationException("There is no such film in our list of films");
+            throw new NotFoundException("There is no such film in our list of films");
         }
 
         log.info("Updated movie description: {}", film.getName());
@@ -92,7 +93,7 @@ public class FilmService implements FilmServiceInterface {
             filmStorage.del(film);
         } else {
             log.error("There is no such film in our list of films");
-            throw new MyValidationException("There is no such film in our list of films");
+            throw new NotFoundException("There is no such film in our list of films");
         }
 
         log.info("Movie deleted {}", film.getName());
@@ -108,7 +109,7 @@ public class FilmService implements FilmServiceInterface {
         if (filmStorage.allFilms().containsKey(id)){
             return filmStorage.allFilms().get(id);
         } else {
-            throw new MyValidationException("There is no such film in our list of films");
+            throw new NotFoundException("There is no such film in our list of films");
         }
     }
 
@@ -134,7 +135,7 @@ public class FilmService implements FilmServiceInterface {
 
         if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
             log.error("Пользователь уже поставил лайк этому фильму");
-            throw new MyValidationException("Пользователь уже поставил лайк этому фильму");
+            throw new RuntimeException("Пользователь уже поставил лайк этому фильму");
         }
 
         findFilmById(film).getLikes().add(userId);
@@ -151,7 +152,7 @@ public class FilmService implements FilmServiceInterface {
 
         if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
             log.error("Пользователь не ставил лайк этому фильму");
-            throw new MyValidationException("Пользователь не ставил лайк этому фильму");
+            throw new RuntimeException("Пользователь не ставил лайк этому фильму");
         }
 
         findFilmById(film).getLikes().remove(userId);
@@ -168,12 +169,12 @@ public class FilmService implements FilmServiceInterface {
             a = Long.parseLong(str);
         } catch (NumberFormatException e){
             log.error("\"" + str + "\" must be a number");
-            throw new MyValidationException("\"" + str + "\" must be a number");
+            throw new ValidationException( "\"" + str + "\" must be a number");
         }
 
         if (a <= 0){
             log.error("\"" + str + "\" must be positive");
-            throw new MyValidationException("\"" + str + "\" must be positive");
+            throw new NotFoundException("\"" + str + "\" must be positive");
         }
 
         return a;
