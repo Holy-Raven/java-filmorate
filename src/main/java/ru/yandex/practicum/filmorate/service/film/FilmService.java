@@ -32,7 +32,7 @@ public class FilmService implements FilmServiceInterface {
     }
 
     @Autowired
-    FilmService(InMemoryFilmStorage filmStorage){
+    public FilmService(InMemoryFilmStorage filmStorage){
         this.filmStorage = filmStorage;
     }
 

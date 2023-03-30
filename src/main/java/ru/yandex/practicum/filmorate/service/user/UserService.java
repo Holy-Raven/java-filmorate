@@ -28,7 +28,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Autowired
-    UserService(InMemoryUserStorage userStorage){
+    public UserService(InMemoryUserStorage userStorage){
         this.userStorage = userStorage;
     }
 
