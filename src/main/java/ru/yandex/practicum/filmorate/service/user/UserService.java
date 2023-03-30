@@ -127,17 +127,17 @@ public class UserService implements UserServiceInterface {
         long user2Id = parseStringInLong(user2);
 
         if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
-            log.error("User №" + user2Id + " и User №" + user1Id + " уже друзья");
-            throw new RuntimeException("User №" + user2Id + " и User №" + user1Id + " уже друзья");
+            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
+            throw new RuntimeException("User №" + user2Id + " and User №" + user1Id + " already friends");
         }
 
-        log.info("User №" + user2Id + "добавлен в списках друзей User №" + user1Id);
+        log.info("User №" + user2Id + "added to friends lists User №" + user1Id);
         userStorage.allUsers().get(user1Id).getFriends().add(user2Id);
 
-        log.info("User №" + user1Id + "добавлен в списках друзей User №" + user2Id);
+        log.info("User №" + user1Id + "added to friends lists User №" + user2Id);
         userStorage.allUsers().get(user2Id).getFriends().add(user1Id);
 
-        log.info("User №" + user1Id + "и User №" + user2Id + "теперь друзья");
+        log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
 
         return userStorage.allUsers().get(user1Id);
     }
@@ -149,17 +149,17 @@ public class UserService implements UserServiceInterface {
         long user2Id = parseStringInLong(user2);
 
         if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
-            log.error("User №" + user2Id + " и User №" + user1Id + " не друзья");
-            throw new RuntimeException("User №" + user2Id + " и User №" + user1Id + " не друзья");
+            log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
+            throw new RuntimeException("User №" + user2Id + " and User №" + user1Id + " not friends");
         }
 
-        log.info("User №" + user2Id + "удален из списка друзей User №" + user1Id);
+        log.info("User №" + user2Id + "removed from friends list User №" + user1Id);
         userStorage.allUsers().get(user1Id).getFriends().remove(user2Id);
 
-        log.info("User №" + user1Id + "удален из списка друзей User №" + user2Id);
+        log.info("User №" + user1Id + "removed from friends list User №" + user2Id);
         userStorage.allUsers().get(user2Id).getFriends().remove(user1Id);
 
-        log.info("User №" + user1Id + "и User №" + user2Id + " теперь не друзья");
+        log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
 
         return userStorage.allUsers().get(user1Id);
     }
@@ -175,7 +175,7 @@ public class UserService implements UserServiceInterface {
             friendsList.add(userStorage.allUsers().get(friend));
         }
 
-        log.info("Список друзей User №" + userId);
+        log.info("List friends User №" + userId);
         return friendsList;
     }
 
@@ -192,7 +192,7 @@ public class UserService implements UserServiceInterface {
                 commonFriends.add(userStorage.allUsers().get(friend));
             }
         }
-        log.info("Список общих друзей User №" + user1Id + "и User №" + user2Id + "готов");
+        log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
         return commonFriends;
     }
 

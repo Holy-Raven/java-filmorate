@@ -134,12 +134,12 @@ public class FilmService implements FilmServiceInterface {
         long userId = parseStringInLong(user);
 
         if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
-            log.error("Пользователь уже поставил лайк этому фильму");
-            throw new RuntimeException("Пользователь уже поставил лайк этому фильму");
+            log.error("The user has already liked this movie");
+            throw new RuntimeException("The user has already liked this movie");
         }
 
         findFilmById(film).getLikes().add(userId);
-        log.info("User №" + userId + " поставил лайк фильму №" + filmId);
+        log.info("User №" + userId + " I liked the movie №" + filmId);
 
         return filmStorage.allFilms().get(filmId);
     }
@@ -151,12 +151,12 @@ public class FilmService implements FilmServiceInterface {
         long userId = parseStringInLong(user);
 
         if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
-            log.error("Пользователь не ставил лайк этому фильму");
-            throw new RuntimeException("Пользователь не ставил лайк этому фильму");
+            log.error("The user did not like this movie");
+            throw new RuntimeException("The user did not like this movie");
         }
 
         findFilmById(film).getLikes().remove(userId);
-        log.info("User №" + userId + " удалили лайк с фильма №" + filmId);
+        log.info("User №" + userId + " removed the varnish from the film №" + filmId);
 
         return filmStorage.allFilms().get(filmId);
     }
