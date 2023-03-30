@@ -70,8 +70,8 @@ public class UserController {
 
     // возвращаем список пользователей, являющихся его друзьями
     @GetMapping("/{id}/friends")
-    public List<User> allUserFriends(@PathVariable("Id") String Id){
-        return userService.friendsList(Id);
+    public List<User> allUserFriends(@PathVariable("id") String id){
+        return userService.friendsList(id);
     }
 
     // список друзей, общих с другим пользователем
