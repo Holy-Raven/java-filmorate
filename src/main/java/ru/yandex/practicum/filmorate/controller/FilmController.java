@@ -48,8 +48,8 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film findFilmById(@PathVariable("id") String Id) {
-        return filmService.findFilmById(Id);
+    public Film findFilmById(@PathVariable("id") String id) {
+        return filmService.findFilmById(id);
     }
 
     //  пользователь ставит лайк фильму
