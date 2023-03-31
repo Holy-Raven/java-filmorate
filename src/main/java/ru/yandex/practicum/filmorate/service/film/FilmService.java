@@ -171,7 +171,7 @@ public class FilmService implements FilmServiceInterface {
             a = Long.parseLong(str);
         } catch (NumberFormatException e) {
             log.error("\"" + str + "\" must be a number");
-            throw new ValidationException( "\"" + str + "\" must be a number");
+            throw new ValidationException("\"" + str + "\" must be a number");
         }
 
         if (a <= 0) {
