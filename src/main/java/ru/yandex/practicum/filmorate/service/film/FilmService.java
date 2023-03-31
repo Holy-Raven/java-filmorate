@@ -24,15 +24,17 @@ public class FilmService implements FilmServiceInterface {
     private static final LocalDate BEGIN_TIME = LocalDate.of(1895,  Month.DECEMBER,28);
 
     private static long newId = 1;
+
     private static long getNewId() {
         return newId++;
     }
+
     public static void setNewId(int newId) {
         FilmService.newId = newId;
     }
 
     @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage){
+    public FilmService(InMemoryFilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -106,7 +108,7 @@ public class FilmService implements FilmServiceInterface {
 
         long id = parseStringInLong(filmId);
 
-        if (filmStorage.allFilms().containsKey(id)){
+        if (filmStorage.allFilms().containsKey(id)) {
             return filmStorage.allFilms().get(id);
         } else {
             throw new NotFoundException("There is no such film in our list of films");
@@ -161,18 +163,18 @@ public class FilmService implements FilmServiceInterface {
         return filmStorage.allFilms().get(filmId);
     }
 
-    public Long parseStringInLong (String str){
+    public Long parseStringInLong (String str) {
 
         long a;
 
         try {
             a = Long.parseLong(str);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             log.error("\"" + str + "\" must be a number");
             throw new ValidationException( "\"" + str + "\" must be a number");
         }
 
-        if (a <= 0){
+        if (a <= 0) {
             log.error("\"" + str + "\" must be positive");
             throw new NotFoundException("\"" + str + "\" must be positive");
         }

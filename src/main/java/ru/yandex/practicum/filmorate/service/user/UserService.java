@@ -20,9 +20,11 @@ public class UserService implements UserServiceInterface {
     UserStorage userStorage;
 
     private static long newId = 1;
+
     private static long getNewId() {
         return newId++;
     }
+
     public static void setNewId(int newId) {
         UserService.newId = newId;
     }
@@ -71,7 +73,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User update(User user) {
 
-        if (userStorage.allUsers().containsKey(user.getId())){
+        if (userStorage.allUsers().containsKey(user.getId())) {
             userStorage.put(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -84,7 +86,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User delete(User user) {
 
-        if (userStorage.allUsers().containsKey(user.getId())){
+        if (userStorage.allUsers().containsKey(user.getId())) {
             userStorage.del(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -99,21 +101,21 @@ public class UserService implements UserServiceInterface {
 
         long id;
 
-        if (userId == null || userId.isBlank()){
+        if (userId == null || userId.isBlank()) {
             throw new ValidationException("The id must not be empty");
         }
 
         try {
             id = Long.parseLong(userId);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new ValidationException("The id must be a number");
         }
 
-        if (id <= 0){
+        if (id <= 0) {
             throw new ValidationException("The id must be positive");
         }
 
-        if (userStorage.allUsers().containsKey(id)){
+        if (userStorage.allUsers().containsKey(id)) {
             return userStorage.allUsers().get(id);
         } else {
             throw new NotFoundException("There is no such user in our list of users");
@@ -196,18 +198,18 @@ public class UserService implements UserServiceInterface {
         return commonFriends;
     }
 
-    public Long parseStringInLong (String str){
+    public Long parseStringInLong (String str) {
 
         long a;
 
         try {
             a = Long.parseLong(str);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             log.error("\"" + str + "\" must be a number");
             throw new ValidationException("\"" + str + "\" must be a number");
         }
 
-        if (a <= 0){
+        if (a <= 0) {
             log.error("\"" + str + "\" must be positive");
             throw new NotFoundException("\"" + str + "\" must be positive");
         }
