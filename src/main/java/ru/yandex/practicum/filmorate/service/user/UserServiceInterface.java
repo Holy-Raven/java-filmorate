@@ -17,11 +17,11 @@ public interface UserServiceInterface {
 
     User findUserById(String userId);
 
-    User addFriends (String user1, String user2);
+    User addFriends(String user1, String user2);
 
-    User delFriends (String user1, String user2);
+    User delFriends(String user1, String user2);
 
-    List<User> friendsList (String user);
+    List<User> friendsList(String user);
 
     List<User> commonFriends(String user1, String user2);
 
