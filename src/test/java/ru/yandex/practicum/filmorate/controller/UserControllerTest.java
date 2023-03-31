@@ -16,7 +16,7 @@ class UserControllerTest {
     public static UserController userController;
 
     @BeforeEach
-    public void beforeEach (){
+    public void beforeEach () {
 
         final UserService userService = new UserService(new InMemoryUserStorage());
 
@@ -141,30 +141,30 @@ class UserControllerTest {
     @Test
     public void getAllUsers() {
 
-        LocalDate birthDay_1 = LocalDate.of(795, 11, 17);
-        User user_1 = new User(null, "ragnar@gmail.com", "Ragnar", "LodBrok", birthDay_1);
-        User userOutBase_1 = userController.create(user_1);
-        assertEquals(1, userOutBase_1.getId());
+        LocalDate birthDay1 = LocalDate.of(795, 11, 17);
+        User user1 = new User(null, "ragnar@gmail.com", "Ragnar", "LodBrok", birthDay1);
+        User userOutBase1 = userController.create(user1);
+        assertEquals(1, userOutBase1.getId());
 
-        LocalDate birthDay_2 = LocalDate.of(1022,01,10);
-        User user_2 = new User(null, "harald@gmail.com", "Harald", "Brave", birthDay_2);
-        User userOutBase_2 = userController.create(user_2);
-        assertEquals(2, userOutBase_2.getId());
+        LocalDate birthDay2 = LocalDate.of(1022,01,10);
+        User user2 = new User(null, "harald@gmail.com", "Harald", "Brave", birthDay2);
+        User userOutBase2 = userController.create(user2);
+        assertEquals(2, userOutBase2.getId());
 
-        LocalDate birthDay_3 = LocalDate.of(1157,8,9);
-        User user_3 = new User(null, "richard@gmail.com", "Richard", "LionHeart", birthDay_3);
-        User userOutBase_3 = userController.create(user_3);
-        assertEquals(3, userOutBase_3.getId());
+        LocalDate birthDay3 = LocalDate.of(1157,8,9);
+        User user3 = new User(null, "richard@gmail.com", "Richard", "LionHeart", birthDay3);
+        User userOutBase3 = userController.create(user3);
+        assertEquals(3, userOutBase3.getId());
 
-        LocalDate birthDay_4 = LocalDate.of(879, 07, 11);
-        User user_4 = new User(null, "rurik@yandex.ru", "Rurik", "Rurik", birthDay_4);
-        User userOutBase_4 = userController.create(user_4);
-        assertEquals(4, userOutBase_4.getId());
+        LocalDate birthDay4 = LocalDate.of(879, 07, 11);
+        User user4 = new User(null, "rurik@yandex.ru", "Rurik", "Rurik", birthDay4);
+        User userOutBase4 = userController.create(user4);
+        assertEquals(4, userOutBase4.getId());
 
-        LocalDate birthDay_5 = LocalDate.of(2016,11,02);
-        User user_5 = new User(null, "miroslav@yandex.ru", "Miroslav", "MJ", birthDay_5);
-        User userOutBase_5 = userController.create(user_5);
-        assertEquals(5, userOutBase_5.getId());
+        LocalDate birthDay5 = LocalDate.of(2016,11,02);
+        User user5 = new User(null, "miroslav@yandex.ru", "Miroslav", "MJ", birthDay5);
+        User userOutBase5 = userController.create(user5);
+        assertEquals(5, userOutBase5.getId());
 
         assertEquals(5, userController.findAll().size());
     }
