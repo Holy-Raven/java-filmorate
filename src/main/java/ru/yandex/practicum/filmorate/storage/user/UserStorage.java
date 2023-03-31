@@ -12,6 +12,6 @@ public interface UserStorage {
 
     User put(User user);
 
-    User del(User User);
+    User del(User user);
 
 }
