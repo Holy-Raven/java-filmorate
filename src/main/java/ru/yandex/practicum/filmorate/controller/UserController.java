@@ -50,7 +50,7 @@ public class UserController {
 
     // найти юзера по id
     @GetMapping("/{userId}")
-    public User findUserById(@PathVariable("userId") String userId){
+    public User findUserById(@PathVariable("userId") String userId) {
         return userService.findUserById(userId);
     }
 
@@ -70,7 +70,7 @@ public class UserController {
 
     // возвращаем список пользователей, являющихся его друзьями
     @GetMapping("/{id}/friends")
-    public List<User> allUserFriends(@PathVariable("id") String id){
+    public List<User> allUserFriends(@PathVariable("id") String id) {
         return userService.friendsList(id);
     }
 
