@@ -30,7 +30,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Autowired
-    public UserService(InMemoryUserStorage userStorage){
+    public UserService(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
