@@ -5,7 +5,6 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.film.FilmServiceInterface;
 
@@ -48,8 +47,8 @@ public class FilmController {
         return filmService.delete(film);
     }
 
-    @GetMapping("/{Id}")
-    public Film findFilmById(@PathVariable("Id") String Id){
+    @GetMapping("/{id}")
+    public Film findFilmById(@PathVariable("id") String Id) {
         return filmService.findFilmById(Id);
     }
 
@@ -69,7 +68,7 @@ public class FilmController {
 
     // возвращает список из первых count фильмов по количеству лайков
     @GetMapping("/popular")
-    public List<Film> popularFilmList(@RequestParam(defaultValue = "10") String count){
+    public List<Film> popularFilmList(@RequestParam(defaultValue = "10") String count) {
         return filmService.sortFilm(count);
     }
 
