@@ -123,7 +123,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User addFriends (String user1, String user2) {
+    public User addFriends(String user1, String user2) {
 
         long user1Id = parseStringInLong(user1);
         long user2Id = parseStringInLong(user2);
@@ -145,7 +145,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User delFriends (String user1, String user2) {
+    public User delFriends(String user1, String user2) {
 
         long user1Id = parseStringInLong(user1);
         long user2Id = parseStringInLong(user2);
@@ -167,7 +167,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<User> friendsList (String user) {
+    public List<User> friendsList(String user) {
 
         long userId = parseStringInLong(user);
 
@@ -198,7 +198,7 @@ public class UserService implements UserServiceInterface {
         return commonFriends;
     }
 
-    public Long parseStringInLong (String str) {
+    public Long parseStringInLong(String str) {
 
         long a;
 

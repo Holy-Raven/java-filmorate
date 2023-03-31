@@ -163,7 +163,7 @@ public class FilmService implements FilmServiceInterface {
         return filmStorage.allFilms().get(filmId);
     }
 
-    public Long parseStringInLong (String str) {
+    public Long parseStringInLong(String str) {
 
         long a;
 
