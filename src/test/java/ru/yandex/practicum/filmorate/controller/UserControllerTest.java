@@ -22,7 +22,7 @@ class UserControllerTest {
 
         userController = new UserController(userService);
 
-        UserService.setNewId(1);
+        userService.setNewId(1);
 
     }
 

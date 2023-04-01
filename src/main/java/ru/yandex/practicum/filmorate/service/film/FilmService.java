@@ -1,46 +1,39 @@
 package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.util.Constant;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FilmService implements FilmServiceInterface {
 
-    FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
 
-    private static final LocalDate BEGIN_TIME = LocalDate.of(1895,  Month.DECEMBER,28);
+    private long newId = 1;
 
-    private static long newId = 1;
-
-    private static long getNewId() {
+    private long getNewId() {
         return newId++;
     }
 
-    public static void setNewId(int newId) {
-        FilmService.newId = newId;
-    }
-
-    @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
+    public void setNewId(int newId) {
+        this.newId = newId;
     }
 
     @Override
-    public Collection<Film> findAll() {
-        return filmStorage.allFilms().values();
+    public List<Film> findAll() {
+        return new ArrayList<>(filmStorage.allFilms().values());
     }
 
     @Override
@@ -54,7 +47,7 @@ public class FilmService implements FilmServiceInterface {
             log.error("The maximum length of the description should not exceed 200 characters");
             throw new ValidationException("The maximum length of the description should not exceed 200 characters");
 
-        } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(BEGIN_TIME)) {
+        } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(Constant.BEGIN_TIME)) {
             log.error("The release date may not be earlier than December 28, 1895");
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
 
@@ -62,7 +55,7 @@ public class FilmService implements FilmServiceInterface {
             log.error("The duration of the film should be positive");
             throw new ValidationException("The duration of the film should be positive");
 
-        } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(BEGIN_TIME)) {
+        } else if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(Constant.BEGIN_TIME)) {
             log.error("The release date may not be earlier than December 28, 1895");
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
@@ -80,7 +73,7 @@ public class FilmService implements FilmServiceInterface {
             filmStorage.put(film);
         } else {
             log.error("There is no such film in our list of films");
-            throw new NotFoundException("There is no such film in our list of films");
+            throw new FilmNotFoundException("There is no such film in our list of films");
         }
 
         log.info("Updated movie description: {}", film.getName());
@@ -95,7 +88,7 @@ public class FilmService implements FilmServiceInterface {
             filmStorage.del(film);
         } else {
             log.error("There is no such film in our list of films");
-            throw new NotFoundException("There is no such film in our list of films");
+            throw new FilmNotFoundException("There is no such film in our list of films");
         }
 
         log.info("Movie deleted {}", film.getName());
@@ -111,7 +104,7 @@ public class FilmService implements FilmServiceInterface {
         if (filmStorage.allFilms().containsKey(id)) {
             return filmStorage.allFilms().get(id);
         } else {
-            throw new NotFoundException("There is no such film in our list of films");
+            throw new FilmNotFoundException("There is no such film in our list of films");
         }
     }
 
@@ -137,7 +130,7 @@ public class FilmService implements FilmServiceInterface {
 
         if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
             log.error("The user has already liked this movie");
-            throw new RuntimeException("The user has already liked this movie");
+            throw new BusinessLogicException("The user has already liked this movie");
         }
 
         findFilmById(film).getLikes().add(userId);
@@ -154,7 +147,7 @@ public class FilmService implements FilmServiceInterface {
 
         if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
             log.error("The user did not like this movie");
-            throw new RuntimeException("The user did not like this movie");
+            throw new BusinessLogicException("The user did not like this movie");
         }
 
         findFilmById(film).getLikes().remove(userId);
@@ -165,7 +158,7 @@ public class FilmService implements FilmServiceInterface {
 
     public Long parseStringInLong(String str) {
 
-        long a;
+        long a = 0;
 
         try {
             a = Long.parseLong(str);
@@ -176,7 +169,7 @@ public class FilmService implements FilmServiceInterface {
 
         if (a <= 0) {
             log.error("\"" + str + "\" must be positive");
-            throw new NotFoundException("\"" + str + "\" must be positive");
+            throw new FilmNotFoundException("\"" + str + "\" must be positive");
         }
 
         return a;

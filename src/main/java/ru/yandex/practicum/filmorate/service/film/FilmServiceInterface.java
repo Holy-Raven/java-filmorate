@@ -1,12 +1,11 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import java.util.Collection;
 import java.util.List;
 
 public interface FilmServiceInterface {
 
-    Collection<Film> findAll();
+    List<Film> findAll();
 
     Film create(Film film);
 

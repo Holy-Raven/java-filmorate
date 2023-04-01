@@ -1,43 +1,38 @@
 package ru.yandex.practicum.filmorate.service.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService implements UserServiceInterface {
 
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
-    private static long newId = 1;
+    private long newId = 1;
 
-    private static long getNewId() {
+    private long getNewId() {
         return newId++;
     }
 
-    public static void setNewId(int newId) {
-        UserService.newId = newId;
-    }
-
-    @Autowired
-    public UserService(InMemoryUserStorage userStorage) {
-        this.userStorage = userStorage;
+    public void setNewId(int newId) {
+        this.newId = newId;
     }
 
     @Override
-    public Collection<User> findAll() {
+    public List<User> findAll() {
 
-        return userStorage.allUsers().values();
+        return new ArrayList<>(userStorage.allUsers().values());
     }
 
     @Override
@@ -77,7 +72,7 @@ public class UserService implements UserServiceInterface {
             userStorage.put(user);
         } else {
             log.error("There is no such user in our list of users");
-            throw new NotFoundException("There is no such user in our list of users");
+            throw new UserNotFoundException("There is no such user in our list of users");
         }
         log.info("User data updated: {}", user.getLogin());
         return user;
@@ -90,7 +85,7 @@ public class UserService implements UserServiceInterface {
             userStorage.del(user);
         } else {
             log.error("There is no such user in our list of users");
-            throw new NotFoundException("There is no such user in our list of users");
+            throw new UserNotFoundException("There is no such user in our list of users");
         }
         log.info("User deleted: {}", user.getLogin());
         return user;
@@ -118,7 +113,7 @@ public class UserService implements UserServiceInterface {
         if (userStorage.allUsers().containsKey(id)) {
             return userStorage.allUsers().get(id);
         } else {
-            throw new NotFoundException("There is no such user in our list of users");
+            throw new UserNotFoundException("There is no such user in our list of users");
         }
     }
 
@@ -130,14 +125,14 @@ public class UserService implements UserServiceInterface {
 
         if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
             log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
-            throw new RuntimeException("User №" + user2Id + " and User №" + user1Id + " already friends");
+            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
         }
 
         log.info("User №" + user2Id + "added to friends lists User №" + user1Id);
-        userStorage.allUsers().get(user1Id).getFriends().add(user2Id);
+        findUserById(user1).getFriends().add(user2Id);
 
         log.info("User №" + user1Id + "added to friends lists User №" + user2Id);
-        userStorage.allUsers().get(user2Id).getFriends().add(user1Id);
+        findUserById(user2).getFriends().add(user1Id);
 
         log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
 
@@ -152,14 +147,14 @@ public class UserService implements UserServiceInterface {
 
         if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
             log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
-            throw new RuntimeException("User №" + user2Id + " and User №" + user1Id + " not friends");
+            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
         }
 
         log.info("User №" + user2Id + "removed from friends list User №" + user1Id);
-        userStorage.allUsers().get(user1Id).getFriends().remove(user2Id);
+        findUserById(user1).getFriends().remove(user2Id);
 
         log.info("User №" + user1Id + "removed from friends list User №" + user2Id);
-        userStorage.allUsers().get(user2Id).getFriends().remove(user1Id);
+        findUserById(user2).getFriends().remove(user1Id);
 
         log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
 
@@ -200,7 +195,7 @@ public class UserService implements UserServiceInterface {
 
     public Long parseStringInLong(String str) {
 
-        long a;
+        long a = 0;
 
         try {
             a = Long.parseLong(str);
@@ -211,7 +206,7 @@ public class UserService implements UserServiceInterface {
 
         if (a <= 0) {
             log.error("\"" + str + "\" must be positive");
-            throw new NotFoundException("\"" + str + "\" must be positive");
+            throw new UserNotFoundException("\"" + str + "\" must be positive");
         }
 
         return a;

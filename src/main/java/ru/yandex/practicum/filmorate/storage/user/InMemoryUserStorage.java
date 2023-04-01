@@ -34,4 +34,5 @@ public class InMemoryUserStorage implements UserStorage {
         users.remove(user.getId());
         return user;
     }
+
 }

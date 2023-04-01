@@ -23,7 +23,7 @@ class FilmControllerTest {
 
         filmController = new FilmController(filmService);
 
-        FilmService.setNewId(1);
+        filmService.setNewId(1);
 
     }
 
