@@ -1,14 +1,14 @@
-
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import java.time.LocalDate;
 import java.util.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import ru.yandex.practicum.filmorate.exception.MyValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.service.user.UserServiceInterface;
 
 import javax.validation.Valid;
 
@@ -17,67 +17,67 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 
-    public final Map<Integer, User> users = new HashMap<>();
+    private final UserServiceInterface userService;
 
-    private static int newId = 1;
-    private static int getNewId() {
-        return newId++;
-    }
-    public static void setNewId(int newId) {
-        UserController.newId = newId;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    // получение списка всех пользователей.
+    // получение списка всех пользователей
     @GetMapping
     public Collection<User> findAll() {
-        return users.values();
+        return userService.findAll();
     }
 
-    // создание пользователя.
+    // создание пользователя
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-
-        //раньше было так (сняла комментарии, что бы тесты написать)
-        LocalDate currentTime = LocalDate.now();
-
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.error("Your email cannot be empty and must contain the character @");
-            throw new MyValidationException("Your email cannot be empty and must contain the character @");
-
-        } else if (user.getLogin() == null || user.getEmail().isBlank() || user.getLogin().contains(" ")) {
-            log.error("Your login cannot be empty or contain spaces.");
-            throw new MyValidationException("Your login cannot be empty or contain spaces.");
-
-        }  else if (user.getBirthday().isAfter(currentTime)) {
-            log.error("The date of birth cannot be in the future.");
-            throw new MyValidationException("The date of birth cannot be in the future.");
-
-        }
-        // без всего того что выше в postman и так работает
-
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.info("The name to display cannot be empty. You have been assigned a name: {}", user.getLogin());
-            user = new User(getNewId(), user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
-
-        } else {
-            user = new User(getNewId(), user.getEmail(), user.getName(), user.getLogin(), user.getBirthday());
-        }
-
-        users.put(user.getId(), user);
-        log.info("User added : {}", user.getLogin());
-        return user;
+        return userService.create(user);
     }
 
-    // обновление пользователя.
+    // обновление пользователя
     @PutMapping
     public User put(@RequestBody User user) {
-        if (users.containsKey(user.getId())){
-            users.put(user.getId(), user);
-        } else {
-            log.error("There is no such user in our list of users");
-            throw new MyValidationException("There is no such user in our list of users");
-        }
-        log.info("User data updated: {}", user.getLogin());
-        return user;
+        return userService.update(user);
+    }
+
+    // удаление пользователя
+    @DeleteMapping
+    public User del(@RequestBody User user) {
+        return userService.delete(user);
+    }
+
+    // найти юзера по id
+    @GetMapping("/{userId}")
+    public User findUserById(@PathVariable("userId") String userId) {
+        return userService.findUserById(userId);
+    }
+
+    // добавление в друзья
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable("id") String id,
+                          @PathVariable("friendId") String friendId) {
+        return userService.addFriends(id, friendId);
+    }
+
+    // удаление из друзей
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User delFriend(@PathVariable("id") String id,
+                          @PathVariable("friendId") String friendId) {
+        return userService.delFriends(id, friendId);
+    }
+
+    // возвращаем список пользователей, являющихся его друзьями
+    @GetMapping("/{id}/friends")
+    public List<User> allUserFriends(@PathVariable("id") String id) {
+        return userService.friendsList(id);
+    }
+
+    // список друзей, общих с другим пользователем
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> commonFriends(@PathVariable("id") String id,
+                                    @PathVariable("otherId") String otherId) {
+        return userService.commonFriends(id, otherId);
     }
 }

@@ -3,9 +3,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import ru.yandex.practicum.filmorate.exception.MyValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 
@@ -16,10 +17,13 @@ class FilmControllerTest {
     public static FilmController filmController;
 
     @BeforeEach
-    public void beforeEach (){
+    public void beforeEach() {
 
-        filmController = new FilmController();
-        FilmController.setNewId(1);
+        final FilmService filmService = new FilmService(new InMemoryFilmStorage());
+
+        filmController = new FilmController(filmService);
+
+        filmService.setNewId(1);
 
     }
 
@@ -31,8 +35,8 @@ class FilmControllerTest {
 
         Film filmOutBase = filmController.create(film);
 
-        assertFalse(filmController.films.isEmpty());
-        assertEquals(1, filmController.films.size());
+        assertFalse(filmController.findAll().isEmpty());
+        assertEquals(1, filmController.findAll().size());
         assertEquals(1, filmOutBase.getId());
     }
 
@@ -44,14 +48,14 @@ class FilmControllerTest {
                 "простого моряка, оказавшихся вместе на необитаемом острове.", releaseDate, 89); //name = Унесённые
 
         assertThrows(
-                MyValidationException.class,
+                ValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("Name of the film cannot be empty");
+                    throw new ValidationException("Name of the film cannot be empty");
                 }
         );
 
-        assertTrue(filmController.films.isEmpty());
+        assertTrue(filmController.findAll().isEmpty());
     }
 
     @Test
@@ -65,14 +69,14 @@ class FilmControllerTest {
                 "боксера и угрюмого громилы грозного мафиози. Каждый норовит в одиночку сорвать большой куш", releaseDate, 104);
 
         assertThrows(
-                MyValidationException.class,
+                ValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("The maximum length of the description should not exceed 200 characters");
+                    throw new ValidationException("The maximum length of the description should not exceed 200 characters");
                 }
         );
 
-        assertTrue(filmController.films.isEmpty());
+        assertTrue(filmController.findAll().isEmpty());
     }
 
     @Test
@@ -84,14 +88,14 @@ class FilmControllerTest {
                 releaseDate, 113);
 
         assertThrows(
-                MyValidationException.class,
+                ValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("The release date may not be earlier than December 28, 1895");
+                    throw new ValidationException("The release date may not be earlier than December 28, 1895");
                 }
         );
 
-        assertTrue(filmController.films.isEmpty());
+        assertTrue(filmController.findAll().isEmpty());
     }
 
     @Test
@@ -103,53 +107,53 @@ class FilmControllerTest {
                 "предпринимателями стали преступные группировки",releaseDate, -114);
 
         assertThrows(
-                MyValidationException.class,
+                ValidationException.class,
                 () -> {
                     filmController.create(film);
-                    throw new MyValidationException("The duration of the film should be positive");
+                    throw new ValidationException("The duration of the film should be positive");
                 }
         );
 
-        assertTrue(filmController.films.isEmpty());
+        assertTrue(filmController.findAll().isEmpty());
     }
 
     @Test
     public void getAllFilms()  {
 
-        LocalDate releaseDate_1 = LocalDate.of(2009,01,29);
-        Film film_1 = new Film(null, "RocknRolla", "Опасный мир коррупции и жизни криминальных отбросов" +
+        LocalDate releaseDate1 = LocalDate.of(2009,01,29);
+        Film film1 = new Film(null, "RocknRolla", "Опасный мир коррупции и жизни криминальных отбросов" +
                 " Лондона, где недвижимость потеснила такого лидера торгового рынка как наркотики, а самыми активными " +
-                "предпринимателями стали преступные группировки",releaseDate_1, 114);
-        Film filmOutBase_1 = filmController.create(film_1);
-        assertEquals(1, filmOutBase_1.getId());
+                "предпринимателями стали преступные группировки",releaseDate1, 114);
+        Film filmOutBase1 = filmController.create(film1);
+        assertEquals(1, filmOutBase1.getId());
 
-        LocalDate releaseDate_2 = LocalDate.of(1998,06,23);
-        Film film_2 = new Film(null, "Карты деньги два ствола", " Один из лучших фильмов Гая Ричи",
-                releaseDate_2, 107);
-        Film filmOutBase_2 = filmController.create(film_2);
-        assertEquals(2, filmOutBase_2.getId());
+        LocalDate releaseDate2 = LocalDate.of(1998,06,23);
+        Film film2 = new Film(null, "Карты деньги два ствола", " Один из лучших фильмов Гая Ричи",
+                releaseDate2, 107);
+        Film filmOutBase2 = filmController.create(film2);
+        assertEquals(2, filmOutBase2.getId());
 
-        LocalDate releaseDate_3 = LocalDate.of(2019,02,13);
-        Film film_3 = new Film(null, "Джентльмены", "Долгожданное возвращение Гая Ричи к корням: бандиты, " +
+        LocalDate releaseDate3 = LocalDate.of(2019,02,13);
+        Film film3 = new Film(null, "Джентльмены", "Долгожданное возвращение Гая Ричи к корням: бандиты, " +
                 "нелинейное повествование, словом, всё, что так любят в британском режиссёре его самые верные фанаты.",
-                releaseDate_3, 113);
-        Film filmOutBase_3 = filmController.create(film_3);
-        assertEquals(3, filmOutBase_3.getId());
+                releaseDate3, 113);
+        Film filmOutBase3 = filmController.create(film3);
+        assertEquals(3, filmOutBase3.getId());
 
-        LocalDate releaseDate_4 = LocalDate.of(2001,05,10);
-        Film film_4 = new Film(null, "Большой куш", "Фрэнки Четыре Пальца должен был переправить краденый " +
+        LocalDate releaseDate4 = LocalDate.of(2001,05,10);
+        Film film4 = new Film(null, "Большой куш", "Фрэнки Четыре Пальца должен был переправить краденый " +
                 "алмаз из Англии в США своему боссу Эви, но, сделав ставку на подпольный боксерский поединок, он попал в " +
-                "круговорот весьма нежелательных событий.", releaseDate_4, 104);
-        Film filmOutBase_4 = filmController.create(film_4);
-        assertEquals(4, filmOutBase_4.getId());
+                "круговорот весьма нежелательных событий.", releaseDate4, 104);
+        Film filmOutBase4 = filmController.create(film4);
+        assertEquals(4, filmOutBase4.getId());
 
-        LocalDate releaseDate_5 = LocalDate.of(2002,10,11);
-        Film film_5 = new Film(null, "Унесенные", " Ремейк итальянского ромкома 1972 года про богатую дамочку и " +
-                "простого моряка, оказавшихся вместе на необитаемом острове.", releaseDate_5, 89);
-        Film filmOutBase_5 = filmController.create(film_5);
-        assertEquals(5, filmOutBase_5.getId());
+        LocalDate releaseDate5 = LocalDate.of(2002,10,11);
+        Film film5 = new Film(null, "Унесенные", " Ремейк итальянского ромкома 1972 года про богатую дамочку и " +
+                "простого моряка, оказавшихся вместе на необитаемом острове.", releaseDate5, 89);
+        Film filmOutBase5 = filmController.create(film5);
+        assertEquals(5, filmOutBase5.getId());
 
-        assertEquals(5, filmController.films.size());
+        assertEquals(5, filmController.findAll().size());
 
     }
 
