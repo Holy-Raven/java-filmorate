@@ -48,8 +48,11 @@ VALUES ( 'aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x);
 ```
 INSERT INTO film (name, description, releaseDate, duration, rating_id)
 VALUES (q, 'aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x); 
-ON CONFLICT (q) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description, releaseDate = EXCLUDED.releaseDate, 
-duration = EXCLUDED.duration, rating_id = EXCLUDED.rating_id; 
+ON CONFLICT (q) DO UPDATE SET name = EXCLUDED.name, 
+                              description = EXCLUDED.description, 
+                              releaseDate = EXCLUDED.releaseDate, 
+                              duration = EXCLUDED.duration, 
+                              rating_id = EXCLUDED.rating_id; 
 ```
 
 #### Удалить фильм
@@ -87,7 +90,10 @@ VALUES ( 'aaa', 'bbb', 'ccc', 'yyyy.mm.dd');
 ```
 INSERT INTO user (user_id, email, name, login, birthday)
 VALUES (q, 'aaa', 'bbb', 'ccc', 'yyyy.mm.dd'); 
-ON CONFLICT (q) DO UPDATE SET email = EXCLUDED.email, name = EXCLUDED.name, login = EXCLUDED.login, birthday = EXCLUDED.birthday; 
+ON CONFLICT (q) DO UPDATE SET email = EXCLUDED.email, 
+                              name = EXCLUDED.name, 
+                              login = EXCLUDED.login, 
+                              birthday = EXCLUDED.birthday; 
 
 ```
 
