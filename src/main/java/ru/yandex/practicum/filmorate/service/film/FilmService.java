@@ -113,7 +113,7 @@ public class FilmService implements FilmServiceInterface {
 
         long size = parseStringInLong(count);
 
-        log.info("Cписок фильмов отсортированный по их популярности");
+        log.info("List of films sorted by their popularity");
         return filmStorage.allFilms().values()
                                      .stream()
                                      .sorted((film1, film2) -> film2.getLikes().size()

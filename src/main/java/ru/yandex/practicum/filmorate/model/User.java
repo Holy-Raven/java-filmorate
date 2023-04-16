@@ -9,15 +9,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
 
     private final Long id;
 
-    private List<Long> friends = new ArrayList<>();
+    private Set<Long> friends = new HashSet<>();
 
     @NotNull(message = "email cannot be empty")
     @NotBlank(message = "email cannot be empty")
