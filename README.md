@@ -55,6 +55,19 @@ ON CONFLICT (q) DO UPDATE SET name = EXCLUDED.name,
                               rating_id = EXCLUDED.rating_id; 
 ```
 
+#### Пользователь ставит лайк
+
+```
+INSERT INTO likes (film_id, user_id)
+VALUES ('somefilm_id', 'someuser_id');
+```
+
+#### Пользователь удаляет лайк
+
+```
+DELETE FROM likes WHERE film_id = somefilm_id, user_id=someuser_id;
+```
+
 #### Удалить фильм
 
 ```
