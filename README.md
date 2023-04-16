@@ -5,7 +5,7 @@ Template repository for Filmorate project.
 
 <img src = "src/main/resources/filmorateER.png" width="" height = "">
 
-[Ссылка на диаграмму](src/main/resources/filmorateER.png)\
+[Ссылка на диаграмму](src/main/resources/filmorateER.png)
 [Ссылка на диаграмму в редакторе диаграмм](https://dbdiagram.io/d/6436b0d58615191cfa8d5bbd)
 
 ## Описание ER диаграммы filmorate:
@@ -40,7 +40,7 @@ WHERE film id = 'somenumber'
 
 ```
 INSERT INTO film (film_id, name, description, releaseDate, duration, rating_id)
-VALUES ( 'aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x); 
+VALUES ('aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x); 
 ```
 
 #### Обновить фильм
@@ -68,7 +68,7 @@ SELECT f.title, count(1.user_id) AS count
 FROM film AS f
 LEFT JOIN likes AS 1 ON f.film_ id = 1.film_id
 GROUP BY f.title
-ORDER BY count DESK;
+ORDER BY count DESС;
 ```
 ### User
 
@@ -82,7 +82,7 @@ SELECT name FROM users;
 
 ```
 INSERT INTO user (email, name, login, birthday)
-VALUES ( 'aaa', 'bbb', 'ccc', 'yyyy.mm.dd'); 
+VALUES ('aaa', 'bbb', 'ccc', 'yyyy.mm.dd'); 
 ```
 
 #### Обновление пользователя
