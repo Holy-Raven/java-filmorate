@@ -74,14 +74,15 @@ DELETE FROM likes WHERE film_id = somefilm_id, user_id=someuser_id;
 DELETE FROM film WHERE id = q; 
 ```
 
-#### Выдать топ count фильмов
+#### Выдать top count фильмов
 
 ```
-SELECT f.title, count(1.user_id) AS count
+SELECT f.title, count(*) AS count
 FROM film AS f
-LEFT JOIN likes AS 1 ON f.film_ id = 1.film_id
+LEFT JOIN likes AS k ON f.film_ id = k.film_id
 GROUP BY f.title
-ORDER BY count DESС;
+ORDER BY count DESС
+LIMIT(top_fillm);
 ```
 ### User
 
