@@ -1,7 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-# ЕР диаграмма filmorate
+# ЕR диаграмма filmorate
 
 <img src = "src/main/resources/filmorateER.png" width="" height = "">
 
