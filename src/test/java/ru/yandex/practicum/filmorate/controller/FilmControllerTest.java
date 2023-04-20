@@ -30,8 +30,13 @@ class FilmControllerTest {
     @Test
     public void addCorrectedFilm()  {
 
-        LocalDate releaseDate = LocalDate.of(1998,06,23);
-        Film film = new Film(null, "Карты деньги два ствола", " Один из лучших фильмов Гая Ричи", releaseDate, 107);
+        Film film = Film.builder()
+            .id(null)
+            .name("Карты деньги два ствола")
+            .description("Один из лучших фильмов Гая Ричи")
+            .releaseDate(LocalDate.of(1998, 06, 23))
+            .duration(107)
+            .build();
 
         Film filmOutBase = filmController.create(film);
 
@@ -43,9 +48,14 @@ class FilmControllerTest {
     @Test
     public void addFilmNotValidName()  {
 
-        LocalDate releaseDate = LocalDate.of(2002,10,11);
-        Film film = new Film(null, null, " Ремейк итальянского ромкома 1972 года про богатую дамочку и " +
-                "простого моряка, оказавшихся вместе на необитаемом острове.", releaseDate, 89); //name = Унесённые
+        Film film = Film.builder()
+                .id(null)
+                .name(null)
+                .description("Ремейк итальянского ромкома 1972 года про богатую дамочку и простого моряка, оказавшихся" +
+                        " вместе на необитаемом острове.")
+                .releaseDate(LocalDate.of(2002, 10, 11))
+                .duration(89)
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -61,12 +71,17 @@ class FilmControllerTest {
     @Test
     public void addFilmLongDescription()  {
 
-        LocalDate releaseDate = LocalDate.of(2001,05,10);
-        Film film = new Film(null, "Большой куш", "Фрэнки Четыре Пальца должен был переправить краденый " +
-                "алмаз из Англии в США своему боссу Эви, но, сделав ставку на подпольный боксерский поединок, он попал в " +
-                "круговорот весьма нежелательных событий. Вокруг него и его груза разворачивается сложная интрига с участием " +
-                "множества колоритных персонажей лондонского дна — русского гангстера, троих незадачливых грабителей, хитрого " +
-                "боксера и угрюмого громилы грозного мафиози. Каждый норовит в одиночку сорвать большой куш", releaseDate, 104);
+        Film film = Film.builder()
+                .id(null)
+                .name("Большой куш")
+                .description("Фрэнки Четыре Пальца должен был переправить краденый алмаз из Англии в США своему боссу Эви, " +
+                        "но, сделав ставку на подпольный боксерский поединок, он попал в круговорот весьма нежелательных " +
+                        "событий. Вокруг него и его груза разворачивается сложная интрига с участием множества колоритных " +
+                        "персонажей лондонского дна — русского гангстера, троих незадачливых грабителей, хитрого " +
+                        "боксера и угрюмого громилы грозного мафиози. Каждый норовит в одиночку сорвать большой куш")
+                .releaseDate(LocalDate.of(2001, 05, 10))
+                .duration(104)
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -82,10 +97,14 @@ class FilmControllerTest {
     @Test
     public void addFilmEarlyRelease()  {
 
-        LocalDate releaseDate = LocalDate.of(1880,02,13);   //2019-02-13
-        Film film = new Film(null, "Джентльмены", "Долгожданное возвращение Гая Ричи к корням: бандиты, " +
-                "нелинейное повествование, словом, всё, что так любят в британском режиссёре его самые верные фанаты.",
-                releaseDate, 113);
+        Film film = Film.builder()
+                .id(null)
+                .name("Джентльмены")
+                .description("Долгожданное возвращение Гая Ричи к корням: бандиты, " +
+                        "нелинейное повествование, словом, всё, что так любят в британском режиссёре его самые верные фанаты.")
+                .releaseDate(LocalDate.of(1880, 02, 13))
+                .duration(113)
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -101,10 +120,15 @@ class FilmControllerTest {
     @Test
     public void addFilmPositiveDuration()  {
 
-        LocalDate releaseDate = LocalDate.of(2009,01,29);
-        Film film = new Film(null, "RocknRolla", "Опасный мир коррупции и жизни криминальных отбросов" +
-                " Лондона, где недвижимость потеснила такого лидера торгового рынка как наркотики, а самыми активными " +
-                "предпринимателями стали преступные группировки",releaseDate, -114);
+        Film film = Film.builder()
+                .id(null)
+                .name("RocknRolla")
+                .description("Опасный мир коррупции и жизни криминальных отбросов" +
+                        " Лондона, где недвижимость потеснила такого лидера торгового рынка как наркотики, а самыми " +
+                        "активными предпринимателями стали преступные группировки")
+                .releaseDate(LocalDate.of(2009, 01, 29))
+                .duration(-114)
+                .build();
 
         assertThrows(
                 ValidationException.class,

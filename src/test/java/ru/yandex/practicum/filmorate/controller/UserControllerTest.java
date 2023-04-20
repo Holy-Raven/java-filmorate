@@ -4,6 +4,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -29,9 +30,13 @@ class UserControllerTest {
     @Test
     public void addCorrectedUser() {
 
-        LocalDate birthDay = LocalDate.of(795, 11, 17);
-
-        User user = new User(null, "ragnar@gmail.com", "Ragnar", "LodBrok", birthDay);
+        User user = User.builder()
+                .id(null)
+                .email("ragnar@gmail.com")
+                .name("Ragnar")
+                .login("LodBrok")
+                .birthday(LocalDate.of(795, 11, 17))
+                .build();
 
         User userOutBase = userController.create(user);
 
@@ -44,10 +49,15 @@ class UserControllerTest {
     @Test
     public void addUserNotValidEmail()  {
 
-        LocalDate birthDay = LocalDate.of(1022,01,10);
 
         // емайл введен не в некорректном формате
-        User user = new User(null, "harald_gmail.com", "Harald", "Brave", birthDay);
+        User user = User.builder()
+                .id(null)
+                .email("harald_gmail.com")
+                .name("Harald")
+                .login("Brave")
+                .birthday(LocalDate.of(1022, 01, 10))
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -60,7 +70,13 @@ class UserControllerTest {
         assertTrue(userController.findAll().isEmpty());
 
         // емайл пустой
-        User user2 = new User(null, null, "Harald", "Brave", birthDay);
+        User user2 = User.builder()
+                .id(null)
+                .email(null)
+                .name("Harald")
+                .login("Brave")
+                .birthday(LocalDate.of(1022, 01, 10))
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -76,10 +92,14 @@ class UserControllerTest {
     @Test
     public void addUserNotValidLogin()  {
 
-        LocalDate birthDay = LocalDate.of(1157,8,9);
-
         // логин введен не в некорректном формате
-        User user = new User(null, "richard@gmail.com", "Richard", "Lion Heart", birthDay);
+        User user = User.builder()
+                .id(null)
+                .email("richard@gmail.com")
+                .name("Richard")
+                .login("Lion Heart")
+                .birthday(LocalDate.of(1157, 8, 9))
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -92,7 +112,13 @@ class UserControllerTest {
         assertTrue(userController.findAll().isEmpty());
 
         // логин пустой
-        User user2 = new User(null, "richard@gmail.com", "Richard", null, birthDay);
+        User user2 = User.builder()
+                .id(null)
+                .email("richard@gmail.com")
+                .name("Richard")
+                .login(null)
+                .birthday(LocalDate.of(1157, 8, 9))
+                .build();
 
         assertThrows(
                 ValidationException.class,
@@ -108,9 +134,13 @@ class UserControllerTest {
     @Test
     public void addUserEmptyName() {
 
-        LocalDate birthDay = LocalDate.of(879, 07, 11);
-
-        User user = new User(null, "rurik@yandex.ru", null, "Rurik", birthDay);
+        User user = User.builder()
+                .id(null)
+                .email("rurik@yandex.ru")
+                .name(null)
+                .login("Rurik")
+                .birthday(LocalDate.of(879, 7, 11))
+                .build();
 
         User userOutBase = userController.create(user);
 
@@ -123,9 +153,13 @@ class UserControllerTest {
     @Test
     public void addUserFutureBirthday()  {
 
-        LocalDate birthDay = LocalDate.of(2030,02,20);
-
-        User user = new User(null, "miroslav@yandex.ru", "Miroslav", "MJ", birthDay);
+        User user = User.builder()
+                .id(null)
+                .email("miroslav@yandex.ru")
+                .name("Miroslav")
+                .login("MJ")
+                .birthday(LocalDate.of(2030, 2, 20))
+                .build();
 
         assertThrows(
                 ValidationException.class,
