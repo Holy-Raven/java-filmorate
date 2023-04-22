@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class User {
 
     private final Long id;

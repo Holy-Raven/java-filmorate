@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -14,11 +15,17 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class UserService implements UserServiceInterface {
 
     private final UserStorage userStorage;
 
+//    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
+//        this.userStorage = userStorage;
+//    }
+//
+    public UserService(@Qualifier("InMemoryUserStorage") UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
     private long newId = 1;
 
     private long getNewId() {
@@ -111,7 +118,7 @@ public class UserService implements UserServiceInterface {
         }
 
         if (userStorage.allUsers().containsKey(id)) {
-            return userStorage.allUsers().get(id);
+            return userStorage.findUserById(id);
         } else {
             throw new UserNotFoundException("There is no such user in our list of users");
         }
@@ -151,14 +158,14 @@ public class UserService implements UserServiceInterface {
         }
 
         log.info("User №" + user2Id + "removed from friends list User №" + user1Id);
-        findUserById(user1).getFriends().remove(user2Id);
+        //findUserById(user1).getFriends().remove(user2Id);
 
         log.info("User №" + user1Id + "removed from friends list User №" + user2Id);
-        findUserById(user2).getFriends().remove(user1Id);
+        //findUserById(user2).getFriends().remove(user1Id);
 
         log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
 
-        return userStorage.allUsers().get(user1Id);
+        return userStorage.delFriends(user1Id,user2Id);
     }
 
     @Override
@@ -166,14 +173,14 @@ public class UserService implements UserServiceInterface {
 
         long userId = parseStringInLong(user);
 
-        List<User> friendsList = new ArrayList<>();
-
-        for (Long friend : userStorage.allUsers().get(userId).getFriends()) {
-            friendsList.add(userStorage.allUsers().get(friend));
-        }
+//        List<User> friendsList = new ArrayList<>();
+//
+//        for (Long friend : userStorage.allUsers().get(userId).getFriends()) {
+//            friendsList.add(userStorage.allUsers().get(friend));
+//        }
 
         log.info("List friends User №" + userId);
-        return friendsList;
+        return userStorage.friendsList(userId);
     }
 
     @Override

@@ -14,14 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class Film {
 
     private final Long id;
 
     private List<Long> likes = new ArrayList<>();
+
+    private List<Long> genres = new ArrayList<>();
+
+    private long mpa_id;
 
     @NotNull(message = "Name of the film cannot be empty")
     @NotBlank(message = "Name of the film cannot be empty")

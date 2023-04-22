@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -11,16 +12,20 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.Constant;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class FilmService implements FilmServiceInterface {
 
     private final FilmStorage filmStorage;
 
+//    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage) {
+//        this.filmStorage = filmStorage;
+//    }
+
+    public FilmService(@Qualifier("InMemoryFilmStorage") FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
+    }
     private long newId = 1;
 
     private long getNewId() {
@@ -102,7 +107,7 @@ public class FilmService implements FilmServiceInterface {
         long id = parseStringInLong(filmId);
 
         if (filmStorage.allFilms().containsKey(id)) {
-            return filmStorage.allFilms().get(id);
+            return filmStorage.findFilmById(id);
         } else {
             throw new FilmNotFoundException("There is no such film in our list of films");
         }
@@ -114,12 +119,7 @@ public class FilmService implements FilmServiceInterface {
         long size = parseStringInLong(count);
 
         log.info("Cписок фильмов отсортированный по их популярности");
-        return filmStorage.allFilms().values()
-                                     .stream()
-                                     .sorted((film1, film2) -> film2.getLikes().size()
-                                                             - film1.getLikes().size())
-                                     .limit(size)
-                                     .collect(Collectors.toList());
+        return filmStorage.sortFilm(size);
     }
 
     @Override
@@ -133,10 +133,9 @@ public class FilmService implements FilmServiceInterface {
             throw new BusinessLogicException("The user has already liked this movie");
         }
 
-        findFilmById(film).getLikes().add(userId);
         log.info("User №" + userId + " I liked the movie №" + filmId);
 
-        return filmStorage.allFilms().get(filmId);
+        return filmStorage.addLikeFilm(filmId,userId);
     }
 
     @Override
@@ -150,10 +149,9 @@ public class FilmService implements FilmServiceInterface {
             throw new BusinessLogicException("The user did not like this movie");
         }
 
-        findFilmById(film).getLikes().remove(userId);
         log.info("User №" + userId + " removed the varnish from the film №" + filmId);
 
-        return filmStorage.allFilms().get(filmId);
+        return filmStorage.delLikeFilm(filmId,userId);
     }
 
     public Long parseStringInLong(String str) {
