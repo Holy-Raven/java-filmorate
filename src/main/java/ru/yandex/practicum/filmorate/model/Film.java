@@ -22,8 +22,6 @@ public class Film {
 
     private List<Long> genres = new ArrayList<>();
 
-    private long mpa_id;
-
     @NotNull(message = "Name of the film cannot be empty")
     @NotBlank(message = "Name of the film cannot be empty")
     private final String name;
@@ -35,6 +33,9 @@ public class Film {
 
     @Positive(message = "The duration of the film should be positive")
     private final Integer duration;
+
+    private final Long mpa_id;
+
 
 }
 

@@ -65,7 +65,7 @@ public class FilmService implements FilmServiceInterface {
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
-        film = new Film(getNewId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration());
+        film = new Film(getNewId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
 
         log.info("Added Film: {}", film.getName());
         return filmStorage.add(film);
