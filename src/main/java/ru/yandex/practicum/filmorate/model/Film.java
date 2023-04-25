@@ -34,8 +34,7 @@ public class Film {
     @Positive(message = "The duration of the film should be positive")
     private final Integer duration;
 
-    private final Long mpa_id;
-
+    private final Mpa mpa;
 
 }
 

@@ -30,16 +30,14 @@ public class Constant {
                 rs.getString("description"),
                 rs.getDate("release_date").toLocalDate(),
                 rs.getInt("duration"),
-                rs.getLong("mpa_id"));
+                new Mpa(rs.getLong("mpa_id")));
         return film;
     };
 
     public static final RowMapper<Mpa> MPA_MAPPER = (ResultSet rs, int rowNum) -> {
 
         Mpa mpa = new Mpa(rs.getLong("mpa_id"),
-                rs.getString("name"),
-                rs.getString("description"));
-
+                rs.getString("name"));
         return mpa;
     };
 

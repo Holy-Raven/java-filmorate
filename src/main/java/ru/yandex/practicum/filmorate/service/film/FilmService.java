@@ -1,14 +1,13 @@
 package ru.yandex.practicum.filmorate.service.film;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.util.Constant;
 
 import java.util.*;
@@ -19,8 +18,11 @@ public class FilmService implements FilmServiceInterface {
 
     private final FilmStorage filmStorage;
 
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage) {
+    private final MpaStorage mpaStorage;
+
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage1) {
         this.filmStorage = filmStorage;
+        this.mpaStorage = mpaStorage1;
     }
 
 //    public FilmService(@Qualifier("InMemoryFilmStorage") FilmStorage filmStorage) {
@@ -38,7 +40,7 @@ public class FilmService implements FilmServiceInterface {
 
     @Override
     public List<Film> findAll() {
-        return new ArrayList<>(filmStorage.allFilms().values());
+        return new ArrayList<>(filmStorage.allFilms());
     }
 
     @Override
@@ -66,8 +68,7 @@ public class FilmService implements FilmServiceInterface {
         }
 
 
-        film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
-//        film = new Film(film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
+        film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get());
 
         log.info("Added Film: {}", film.getName());
         return filmStorage.add(film);
@@ -76,7 +77,7 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public Film update(Film film) {
 
-        if (filmStorage.allFilms().containsKey(film.getId())) {
+        if (existsById(film.getId())) {
             filmStorage.put(film);
         } else {
             log.error("There is no such film in our list of films");
@@ -91,7 +92,7 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public Film delete(Film film) {
 
-        if (filmStorage.allFilms().containsKey(film.getId())) {
+        if (existsById(film.getId())) {
             filmStorage.del(film);
         } else {
             log.error("There is no such film in our list of films");
@@ -104,11 +105,11 @@ public class FilmService implements FilmServiceInterface {
     }
 
     @Override
-    public Film findFilmById(String filmId) {
+    public Optional<Film> findFilmById(String filmId) {
 
         long id = parseStringInLong(filmId);
 
-        if (filmStorage.allFilms().containsKey(id)) {
+        if (existsById(id)) {
             return filmStorage.findFilmById(id);
         } else {
             throw new FilmNotFoundException("There is no such film in our list of films");
@@ -117,43 +118,48 @@ public class FilmService implements FilmServiceInterface {
 
     @Override
     public List<Film> sortFilm(String count) {
-
-        long size = parseStringInLong(count);
-
-        log.info("Cписок фильмов отсортированный по их популярности");
-        return filmStorage.sortFilm(size);
+//
+//        long size = parseStringInLong(count);
+//
+//        log.info("Cписок фильмов отсортированный по их популярности");
+//        return filmStorage.sortFilm(size);
+        return null;
     }
 
     @Override
     public Film addLikeFilm(String film, String user) {
 
-        long filmId = parseStringInLong(film);
-        long userId = parseStringInLong(user);
+//        long filmId = parseStringInLong(film);
+//        long userId = parseStringInLong(user);
+//
+//        if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
+//            log.error("The user has already liked this movie");
+//            throw new BusinessLogicException("The user has already liked this movie");
+//        }
+//
+//        log.info("User №" + userId + " I liked the movie №" + filmId);
+//
+//        return filmStorage.addLikeFilm(filmId,userId);
 
-        if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
-            log.error("The user has already liked this movie");
-            throw new BusinessLogicException("The user has already liked this movie");
-        }
-
-        log.info("User №" + userId + " I liked the movie №" + filmId);
-
-        return filmStorage.addLikeFilm(filmId,userId);
+        return null;
     }
 
     @Override
     public Film delLikeFilm(String film, String user) {
 
-        long filmId = parseStringInLong(film);
-        long userId = parseStringInLong(user);
+//        long filmId = parseStringInLong(film);
+//        long userId = parseStringInLong(user);
+//
+//        if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
+//            log.error("The user did not like this movie");
+//            throw new BusinessLogicException("The user did not like this movie");
+//        }
+//
+//        log.info("User №" + userId + " removed the varnish from the film №" + filmId);
+//
+//        return filmStorage.delLikeFilm(filmId,userId);
 
-        if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
-            log.error("The user did not like this movie");
-            throw new BusinessLogicException("The user did not like this movie");
-        }
-
-        log.info("User №" + userId + " removed the varnish from the film №" + filmId);
-
-        return filmStorage.delLikeFilm(filmId,userId);
+        return null;
     }
 
     public Long parseStringInLong(String str) {
@@ -173,6 +179,10 @@ public class FilmService implements FilmServiceInterface {
         }
 
         return a;
+    }
+
+    public boolean existsById(Long filmId) {
+        return filmStorage.findFilmById(filmId).isPresent();
     }
 
 }
