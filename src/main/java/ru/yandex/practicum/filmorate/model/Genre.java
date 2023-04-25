@@ -7,6 +7,6 @@ public class Genre {
 
     private final Long id;
 
-    private String name;
+    private final String name;
 
 }

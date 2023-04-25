@@ -19,22 +19,22 @@ public class FilmService implements FilmServiceInterface {
 
     private final FilmStorage filmStorage;
 
-//    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage) {
-//        this.filmStorage = filmStorage;
-//    }
-
-    public FilmService(@Qualifier("InMemoryFilmStorage") FilmStorage filmStorage) {
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
-    private long newId = 1;
 
-    private long getNewId() {
-        return newId++;
-    }
-
-    public void setNewId(int newId) {
-        this.newId = newId;
-    }
+//    public FilmService(@Qualifier("InMemoryFilmStorage") FilmStorage filmStorage) {
+//        this.filmStorage = filmStorage;
+//    }
+//    private long newId = 1;
+//
+//    private long getNewId() {
+//        return newId++;
+//    }
+//
+//    public void setNewId(int newId) {
+//        this.newId = newId;
+//    }
 
     @Override
     public List<Film> findAll() {
@@ -65,7 +65,9 @@ public class FilmService implements FilmServiceInterface {
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
-        film = new Film(getNewId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
+
+        film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
+//        film = new Film(film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
 
         log.info("Added Film: {}", film.getName());
         return filmStorage.add(film);

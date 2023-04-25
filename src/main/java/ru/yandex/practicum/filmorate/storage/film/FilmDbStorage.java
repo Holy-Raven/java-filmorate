@@ -3,11 +3,17 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlInOutParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
@@ -31,26 +37,49 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film add(Film film) {
 
-        String name = film.getName();
-        String description = film.getDescription();
-        Date releasedate = java.sql.Date.valueOf(film.getReleaseDate());
-        Integer duration = film.getDuration();
-        Long mpa_id = film.getMpa_id();
+        String sqlQuery = "INSERT INTO FilMS AS F (NAME, DESCRIPTION, RELEASEDATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?)";
 
-        this.jdbcTemplate.update(
-                "INSERT INTO FilMS AS F (NAME, DESCRIPTION, RELEASEDATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?" +
-                        name, description, releasedate, duration, mpa_id );
-        return film;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+         jdbcTemplate.update(connection -> {
+            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"film_id"});
+            stmt.setString(1, film.getName());
+            stmt.setString(2, film.getDescription());
+            stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
+            stmt.setInt(4, film.getDuration());
+            stmt.setLong(5, film.getMpa_id());
+            return stmt;
+
+        }, keyHolder);
+//
+//        SqlParameterSource filmParams = new MapSqlParameterSource()
+//                .addValues("film_id",film.film )
+//
+//
+//
+//        int num = namedParameterJdbcTemplate.update(sqlQuery, filmParams, keyHolder)
+
+        return new Film(keyHolder.getKey().longValue(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),null);
     }
 
     @Override
     public Film put(Film film) {
-        return null;
+
+        this.jdbcTemplate.update(
+                "update FILMS set NAME = ?, DESCRIPTION = ?, RELEASEDATE = ?, DURATION = ?, MPA_ID = ? where FILM_ID = ?",
+                film.getName(), film.getDescription(), java.sql.Date.valueOf(film.getReleaseDate()), film.getDuration(),film.getMpa_id(), film.getId());
+
+        return film;
     }
 
     @Override
     public Film del(Film film) {
-        return null;
+
+        this.jdbcTemplate.update(
+                "delete from FILMS where FILM_ID = ?",
+                Long.valueOf(film.getId()));
+
+        return film;
     }
 
     @Override
@@ -61,15 +90,15 @@ public class FilmDbStorage implements FilmStorage {
         // обрабатываем результат выполнения запроса
         if(filmRows.next()) {
             Film film = new Film(
-                    filmRows.getLong("film_id"),
+                    filmId,
                     filmRows.getString("name"),
                     filmRows.getString("description"),
                     LocalDate.ofInstant(filmRows.getDate("releasedate").toInstant(), ZoneId.systemDefault()),
                     filmRows.getInt("duration"),
                     filmRows.getLong("mpa_id"));
 
-
             log.info("Найден фильм: {} {}" , film.getId(), film.getName());
+
             return film;
         } else {
             log.info("Фильм с идентификатором {} не найден.", filmId);

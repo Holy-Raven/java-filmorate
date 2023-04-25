@@ -6,8 +6,8 @@ public class Mpa {
 
     private final Long id;
 
-    private String name;
+    private final String name;
 
-    private  String description;
+    private final String description;
 
 }

@@ -24,3 +24,6 @@ VALUES ('R','persons under the age of 17 can only watch the film in the presence
 
 INSERT INTO mpas (name, description)
 VALUES ('NC-17','viewing is prohibited for persons under 18 years of age');
+
+-- INSERT INTO USERS (LOGIN, NAME, EMAIL, BIRTHDAY)
+-- VALUES ('dolore','Nick Name', 'mail@mail.ru', '1946-08-20');

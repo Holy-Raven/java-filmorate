@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -19,27 +19,27 @@ public class UserService implements UserServiceInterface {
 
     private final UserStorage userStorage;
 
-//    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
-//        this.userStorage = userStorage;
-//    }
-//
-    public UserService(@Qualifier("InMemoryUserStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
-    private long newId = 1;
 
-    private long getNewId() {
-        return newId++;
-    }
-
-    public void setNewId(int newId) {
-        this.newId = newId;
-    }
+//    public UserService(@Qualifier("InMemoryUserStorage") UserStorage userStorage) {
+//        this.userStorage = userStorage;
+//    }
+//    private long newId = 1;
+//
+//    private long getNewId() {
+//        return newId++;
+//    }
+//
+//    public void setNewId(int newId) {
+//        this.newId = newId;
+//    }
 
     @Override
     public List<User> findAll() {
 
-        return new ArrayList<>(userStorage.allUsers().values());
+        return new ArrayList<>(userStorage.allUsers());
     }
 
     @Override
@@ -62,10 +62,10 @@ public class UserService implements UserServiceInterface {
 
         if (user.getName() == null || user.getName().isBlank()) {
             log.info("The name to display cannot be empty. You have been assigned a name: {}", user.getLogin());
-            user = new User(getNewId(), user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
+            user = new User(null, user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
 
         } else {
-            user = new User(getNewId(), user.getEmail(), user.getName(), user.getLogin(), user.getBirthday());
+            user = new User(null, user.getEmail(), user.getName(), user.getLogin(), user.getBirthday());
         }
 
         log.info("User added : {}", user.getLogin());
@@ -75,7 +75,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User update(User user) {
 
-        if (userStorage.allUsers().containsKey(user.getId())) {
+        if (existsById(user.getId())) {
             userStorage.put(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -88,7 +88,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User delete(User user) {
 
-        if (userStorage.allUsers().containsKey(user.getId())) {
+        if (existsById(user.getId())) {
             userStorage.del(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -99,7 +99,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User findUserById(String userId) {
+    public Optional<User> findUserById(String userId) {
 
         long id;
 
@@ -108,7 +108,7 @@ public class UserService implements UserServiceInterface {
         }
 
         try {
-            id = Long.parseLong(userId);
+            id = parseStringInLong(userId);
         } catch (NumberFormatException e) {
             throw new ValidationException("The id must be a number");
         }
@@ -117,7 +117,7 @@ public class UserService implements UserServiceInterface {
             throw new ValidationException("The id must be positive");
         }
 
-        if (userStorage.allUsers().containsKey(id)) {
+        if (existsById(id)) {
             return userStorage.findUserById(id);
         } else {
             throw new UserNotFoundException("There is no such user in our list of users");
@@ -127,77 +127,81 @@ public class UserService implements UserServiceInterface {
     @Override
     public User addFriends(String user1, String user2) {
 
-        long user1Id = parseStringInLong(user1);
-        long user2Id = parseStringInLong(user2);
-
-        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
-            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
-            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
-        }
-
-        log.info("User №" + user2Id + "added to friends lists User №" + user1Id);
-        findUserById(user1).getFriends().add(user2Id);
-
-        log.info("User №" + user1Id + "added to friends lists User №" + user2Id);
-        findUserById(user2).getFriends().add(user1Id);
-
-        log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
-
-        return userStorage.allUsers().get(user1Id);
+//        long user1Id = parseStringInLong(user1);
+//        long user2Id = parseStringInLong(user2);
+//
+//        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
+//            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
+//            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
+//        }
+//
+//        log.info("User №" + user2Id + "added to friends lists User №" + user1Id);
+//        findUserById(user1).getFriends().add(user2Id);
+//
+//        log.info("User №" + user1Id + "added to friends lists User №" + user2Id);
+//        findUserById(user2).getFriends().add(user1Id);
+//
+//        log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
+//
+//        return userStorage.allUsers().get(user1Id);
+        return null;
     }
 
     @Override
     public User delFriends(String user1, String user2) {
 
-        long user1Id = parseStringInLong(user1);
-        long user2Id = parseStringInLong(user2);
-
-        if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
-            log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
-            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
-        }
-
-        log.info("User №" + user2Id + "removed from friends list User №" + user1Id);
-        //findUserById(user1).getFriends().remove(user2Id);
-
-        log.info("User №" + user1Id + "removed from friends list User №" + user2Id);
-        //findUserById(user2).getFriends().remove(user1Id);
-
-        log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
-
-        return userStorage.delFriends(user1Id,user2Id);
+//        long user1Id = parseStringInLong(user1);
+//        long user2Id = parseStringInLong(user2);
+//
+//        if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
+//            log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
+//            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
+//        }
+//
+//        log.info("User №" + user2Id + "removed from friends list User №" + user1Id);
+//        //findUserById(user1).getFriends().remove(user2Id);
+//
+//        log.info("User №" + user1Id + "removed from friends list User №" + user2Id);
+//        //findUserById(user2).getFriends().remove(user1Id);
+//
+//        log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
+//
+//        return userStorage.delFriends(user1Id,user2Id);
+        return null;
     }
 
     @Override
     public List<User> friendsList(String user) {
 
-        long userId = parseStringInLong(user);
-
+//        long userId = parseStringInLong(user);
+//
 //        List<User> friendsList = new ArrayList<>();
 //
 //        for (Long friend : userStorage.allUsers().get(userId).getFriends()) {
 //            friendsList.add(userStorage.allUsers().get(friend));
 //        }
-
-        log.info("List friends User №" + userId);
-        return userStorage.friendsList(userId);
+//
+//        log.info("List friends User №" + userId);
+//        return userStorage.friendsList(userId);
+        return null;
     }
 
     @Override
     public List<User> commonFriends(String user1, String user2) {
 
-        long user1Id = parseStringInLong(user1);
-        long user2Id = parseStringInLong(user2);
-
-        List<User> commonFriends = new ArrayList<>();
-
-        for (Long friend : userStorage.allUsers().get(user1Id).getFriends()) {
-            if (userStorage.allUsers().get(user2Id).getFriends().contains(friend)) {
-                commonFriends.add(userStorage.allUsers().get(friend));
-            }
-        }
-        log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
-        return commonFriends;
+//        long user1Id = parseStringInLong(user1);
+//        long user2Id = parseStringInLong(user2);
+//
+//        List<User> commonFriends = new ArrayList<>();
+//
+//        for (Long friend : userStorage.allUsers().get(user1Id).getFriends()) {
+//            if (userStorage.allUsers().get(user2Id).getFriends().contains(friend)) {
+//                commonFriends.add(userStorage.allUsers().get(friend));
+//            }
+//        }
+//        log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
+//        return commonFriends;
+        return null;
     }
 
     public Long parseStringInLong(String str) {
@@ -217,6 +221,10 @@ public class UserService implements UserServiceInterface {
         }
 
         return a;
+    }
+
+    public boolean existsById(Long userId) {
+        return userStorage.findUserById(userId).isPresent();
     }
 
 }

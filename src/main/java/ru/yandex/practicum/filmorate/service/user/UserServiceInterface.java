@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.user;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserServiceInterface {
 
@@ -14,7 +15,7 @@ public interface UserServiceInterface {
 
     User delete(User user);
 
-    User findUserById(String userId);
+    Optional<User> findUserById(String userId);
 
     User addFriends(String user1, String user2);
 

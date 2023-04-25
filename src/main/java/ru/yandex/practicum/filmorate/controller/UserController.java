@@ -50,7 +50,7 @@ public class UserController {
 
     // найти юзера по id
     @GetMapping("/{userId}")
-    public User findUserById(@PathVariable("userId") String userId) {
+    public Optional<User> findUserById(@PathVariable("userId") String userId) {
         return userService.findUserById(userId);
     }
 
