@@ -67,7 +67,6 @@ public class FilmService implements FilmServiceInterface {
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
-
         film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get());
 
         log.info("Added Film: {}", film.getName());
@@ -78,14 +77,17 @@ public class FilmService implements FilmServiceInterface {
     public Film update(Film film) {
 
         if (existsById(film.getId())) {
+
+            film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get());
+
             filmStorage.put(film);
+
+            log.info("Updated movie description: {}", film.getName());
+            return film;
         } else {
             log.error("There is no such film in our list of films");
             throw new FilmNotFoundException("There is no such film in our list of films");
         }
-
-        log.info("Updated movie description: {}", film.getName());
-        return film;
 
     }
 

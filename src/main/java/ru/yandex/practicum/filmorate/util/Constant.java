@@ -28,7 +28,7 @@ public class Constant {
         Film film = new Film(rs.getLong("film_id"),
                 rs.getString("name"),
                 rs.getString("description"),
-                rs.getDate("release_date").toLocalDate(),
+                rs.getDate("releaseDate").toLocalDate(),
                 rs.getInt("duration"),
                 new Mpa(rs.getLong("mpa_id")));
         return film;

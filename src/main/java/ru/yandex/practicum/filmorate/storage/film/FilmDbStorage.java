@@ -73,7 +73,7 @@ public class FilmDbStorage implements FilmStorage {
         String selectSql = "update FILMS set NAME = ?, DESCRIPTION = ?, RELEASEDATE = ?, DURATION = ?, MPA_ID = ? where FILM_ID = ?";
 
         this.jdbcTemplate.update(selectSql, film.getName(), film.getDescription(), java.sql.Date.valueOf(film.getReleaseDate()),
-                film.getDuration(),film.getMpa(), film.getId());
+                film.getDuration(),film.getMpa().getId(), film.getId());
     }
 
     @Override
@@ -87,38 +87,38 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Optional <Film> findFilmById(Long filmId) {
 
-//        String selectSql = "select * from FILMS AS F where F.FILM_ID = ?";
-//
-//        Film film = jdbcTemplate.queryForObject(selectSql, FILM_MAPPER, filmId);
-//
-//        if (film != null) {
-//            log.info("Найден фильм: {} {}" , film.getId(), film.getName());
-//            return Optional.of(film);
-//        } else {
-//           log.info("Фильм с идентификатором {} не найден.", filmId);
-//            return Optional.empty();
-//        }
+        String selectSql = "select * from FILMS AS F where F.FILM_ID = ?";
 
+        Film film = jdbcTemplate.queryForObject(selectSql, FILM_MAPPER, filmId);
 
-        // выполняем запрос к базе данных.
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS WHERE FILM_ID = ?", filmId);
-
-        // обрабатываем результат выполнения запроса
-        if(filmRows.next()) {
-            Film film = new Film(
-                    filmId,
-                    filmRows.getString("name"),
-                    filmRows.getString("description"),
-                    LocalDate.ofInstant(filmRows.getDate("releasedate").toInstant(), ZoneId.systemDefault()),
-                    filmRows.getInt("duration"),
-                    new Mpa(filmRows.getLong("mpa_id")));
-
+        if (film != null) {
             log.info("Найден фильм: {} {}" , film.getId(), film.getName());
             return Optional.of(film);
         } else {
-            log.info("Фильм с идентификатором {} не найден.", filmId);
+           log.info("Фильм с идентификатором {} не найден.", filmId);
             return Optional.empty();
         }
+
+
+//        // выполняем запрос к базе данных.
+//        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS WHERE FILM_ID = ?", filmId);
+//
+//        // обрабатываем результат выполнения запроса
+//        if(filmRows.next()) {
+//            Film film = new Film(
+//                    filmId,
+//                    filmRows.getString("name"),
+//                    filmRows.getString("description"),
+//                    LocalDate.ofInstant(filmRows.getDate("releasedate").toInstant(), ZoneId.systemDefault()),
+//                    filmRows.getInt("duration"),
+//                    new Mpa(filmRows.getLong("mpa_id")));
+//
+//            log.info("Найден фильм: {} {}" , film.getId(), film.getName());
+//            return Optional.of(film);
+//        } else {
+//            log.info("Фильм с идентификатором {} не найден.", filmId);
+//            return Optional.empty();
+//        }
     }
 
     @Override
