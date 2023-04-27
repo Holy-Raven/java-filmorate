@@ -2,11 +2,10 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -43,12 +42,12 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User add(User user) {
 
-        String sqlQuery = "INSERT INTO USERS (email, name, login, birthday) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO USERS (email, name, login, birthday) VALUES (?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"user_id"});
+            PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"user_id"});
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getName());
             stmt.setString(3, user.getLogin());
@@ -62,17 +61,16 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void put(User user) {
 
-        String selectSql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";
+        String selectSql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? WHERE USER_ID = ?";
 
         jdbcTemplate.update(selectSql, user.getEmail(), user.getName(), user.getLogin(),
                 java.sql.Date.valueOf(user.getBirthday()), user.getId());
-
     }
 
     @Override
     public void del(User user) {
 
-        String selectSql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";
+        String selectSql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? WHERE USER_ID = ?";
 
         jdbcTemplate.update(selectSql, user.getId());
 
@@ -81,36 +79,36 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Optional<User> findUserById(Long userId) {
 
-//        String selectSql = "SELECT * FROM USERS WHERE USER_ID = ?";
-//
-//        User user = jdbcTemplate.queryForObject(selectSql, USER_MAPPER, userId);
-//
-//        try {
-//            log.info("Найден пользователь: {} {}" , user.getId(), user.getName());
-//            return Optional.of(user);
-//        } catch (RuntimeException e) {
-//            log.info("Пользователь с идентификатором {} не найден.", userId);
-//            return Optional.empty();
-//        }
+        String sql = "SELECT * FROM USERS WHERE USER_ID = ?";
 
-        // выполняем запрос к базе данных.
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM USERS WHERE USER_ID = ?", userId);
+        User user = jdbcTemplate.queryForObject(sql, USER_MAPPER, userId);
 
-        // обрабатываем результат выполнения запроса
-        if(userRows.next()) {
-            User user = new User(
-                    userId,
-                    userRows.getString("email"),
-                    userRows.getString("name"),
-                    userRows.getString("login"),
-                    userRows.getDate("birthday").toLocalDate());
-
+        if (user != null) {
             log.info("Найден пользователь: {} {}" , user.getId(), user.getName());
             return Optional.of(user);
-        } else {
+        } else  {
             log.info("Пользователь с идентификатором {} не найден.", userId);
             return Optional.empty();
         }
+
+//        // выполняем запрос к базе данных.
+//        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM USERS WHERE USER_ID = ?", userId);
+//
+//        // обрабатываем результат выполнения запроса
+//        if(userRows.next()) {
+//            User user = new User(
+//                    userId,
+//                    userRows.getString("email"),
+//                    userRows.getString("name"),
+//                    userRows.getString("login"),
+//                    userRows.getDate("birthday").toLocalDate());
+//
+//            log.info("Найден пользователь: {} {}" , user.getId(), user.getName());
+//            return Optional.of(user);
+//        } else {
+//            log.info("Пользователь с идентификатором {} не найден.", userId);
+//            return Optional.empty();
+//        }
     }
 
 
@@ -129,5 +127,8 @@ public class UserDbStorage implements UserStorage {
         return null;
     }
 
+    public boolean existsById(Long userId) {
+        return findUserById(userId).isPresent();
+    }
 
 }

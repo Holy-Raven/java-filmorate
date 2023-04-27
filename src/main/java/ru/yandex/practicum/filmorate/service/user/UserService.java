@@ -3,10 +3,11 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,8 +20,11 @@ public class UserService implements UserServiceInterface {
 
     private final UserStorage userStorage;
 
-    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
+    private final FriendshipStorage friendshipStorage;
+
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage, FriendshipStorage friendshipStorage) {
         this.userStorage = userStorage;
+        this.friendshipStorage = friendshipStorage;
     }
 
 //    public UserService(@Qualifier("InMemoryUserStorage") UserStorage userStorage) {
@@ -75,7 +79,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User update(User user) {
 
-        if (existsById(user.getId())) {
+        if (userStorage.existsById(user.getId())) {
             userStorage.put(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -88,7 +92,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public User delete(User user) {
 
-        if (existsById(user.getId())) {
+        if (userStorage.existsById(user.getId())) {
             userStorage.del(user);
         } else {
             log.error("There is no such user in our list of users");
@@ -117,7 +121,7 @@ public class UserService implements UserServiceInterface {
             throw new ValidationException("The id must be positive");
         }
 
-        if (existsById(id)) {
+        if (userStorage.existsById(id)) {
             return userStorage.findUserById(id);
         } else {
             throw new UserNotFoundException("There is no such user in our list of users");
@@ -127,8 +131,8 @@ public class UserService implements UserServiceInterface {
     @Override
     public User addFriends(String user1, String user2) {
 
-//        long user1Id = parseStringInLong(user1);
-//        long user2Id = parseStringInLong(user2);
+        long user1Id = parseStringInLong(user1);
+        long user2Id = parseStringInLong(user2);
 //
 //        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
 //            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
@@ -144,6 +148,10 @@ public class UserService implements UserServiceInterface {
 //        log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
 //
 //        return userStorage.allUsers().get(user1Id);
+
+        Friendship friendship = new Friendship(user1Id, user2Id);
+
+
         return null;
     }
 
@@ -221,10 +229,6 @@ public class UserService implements UserServiceInterface {
         }
 
         return a;
-    }
-
-    public boolean existsById(Long userId) {
-        return userStorage.findUserById(userId).isPresent();
     }
 
 }

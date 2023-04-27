@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate.util;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
@@ -47,5 +44,13 @@ public class Constant {
                 rs.getString("name"));
         return genre;
     };
+
+    public static final RowMapper<Friendship> FRIENDSHIP_MAPPER = (ResultSet rs, int rowNum) -> {
+
+        Friendship friendship = new Friendship(rs.getLong("first_user_id"),
+                rs.getLong("second_user_id"));
+        return friendship;
+    };
+
 
 }

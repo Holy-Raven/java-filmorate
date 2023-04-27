@@ -40,7 +40,17 @@ public class FilmService implements FilmServiceInterface {
 
     @Override
     public List<Film> findAll() {
-        return new ArrayList<>(filmStorage.allFilms());
+
+        List<Film> films = new ArrayList<>();
+
+        for (Film film : filmStorage.allFilms()) {
+
+            films.add(new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                    mpaStorage.findById(film.getMpa().getId()).get()));
+
+        }
+
+        return films;
     }
 
     @Override
@@ -67,7 +77,8 @@ public class FilmService implements FilmServiceInterface {
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
-        film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get());
+        film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                mpaStorage.findById(film.getMpa().getId()).get());
 
         log.info("Added Film: {}", film.getName());
         return filmStorage.add(film);
@@ -76,11 +87,12 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public Film update(Film film) {
 
-        if (existsById(film.getId())) {
-
-            film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get());
+        if (filmStorage.existsById(film.getId())) {
 
             filmStorage.put(film);
+
+            film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                    mpaStorage.findById(film.getMpa().getId()).get());
 
             log.info("Updated movie description: {}", film.getName());
             return film;
@@ -94,7 +106,7 @@ public class FilmService implements FilmServiceInterface {
     @Override
     public Film delete(Film film) {
 
-        if (existsById(film.getId())) {
+        if (filmStorage.existsById(film.getId())) {
             filmStorage.del(film);
         } else {
             log.error("There is no such film in our list of films");
@@ -111,8 +123,13 @@ public class FilmService implements FilmServiceInterface {
 
         long id = parseStringInLong(filmId);
 
-        if (existsById(id)) {
-            return filmStorage.findFilmById(id);
+        if (filmStorage.existsById(id)) {
+
+           Film film = filmStorage.findFilmById(id).get();
+           film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                   mpaStorage.findById(film.getMpa().getId()).get());
+
+           return Optional.of(film);
         } else {
             throw new FilmNotFoundException("There is no such film in our list of films");
         }
@@ -181,10 +198,6 @@ public class FilmService implements FilmServiceInterface {
         }
 
         return a;
-    }
-
-    public boolean existsById(Long filmId) {
-        return filmStorage.findFilmById(filmId).isPresent();
     }
 
 }

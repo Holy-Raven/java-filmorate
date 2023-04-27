@@ -23,4 +23,5 @@ public interface FilmStorage {
 
     List<Film> sortFilm(Long size);
 
+    boolean existsById(Long id);
 }

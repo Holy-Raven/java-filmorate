@@ -25,7 +25,7 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Optional<Mpa> findById(long id) {
 
-        String selectSql = "SELECT * FROM MPAS WHERE MPA_ID = ?";
+        String selectSql = "SELECT * FROM MPA WHERE MPA_ID = ?";
 
         Mpa mpa = jdbcTemplate.queryForObject(selectSql, MPA_MAPPER, id);
 
@@ -39,7 +39,7 @@ public class MpaDbStorage implements MpaStorage {
     }
     @Override
     public List<Mpa> findAll() {
-        String selectSql = "SELECT * FROM MPAS ORDER BY MPA_ID DESC";
+        String selectSql = "SELECT * FROM MPA ORDER BY MPA_ID DESC";
         return jdbcTemplate.query(selectSql, MPA_MAPPER);
     }
 }

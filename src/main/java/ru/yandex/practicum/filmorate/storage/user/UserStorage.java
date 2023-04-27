@@ -23,4 +23,5 @@ public interface UserStorage {
 
     List<User> friendsList(Long user);
 
+    boolean existsById(Long id);
 }

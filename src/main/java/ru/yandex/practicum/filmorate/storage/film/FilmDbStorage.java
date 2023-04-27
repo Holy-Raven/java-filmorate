@@ -5,16 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,11 +30,11 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List <Film> allFilms() {
 
-        String selectSql = "SELECT * FROM FILMS";
+        String sql = "SELECT * FROM FILMS";
 
         try {
             log.info("Список пользователей");
-            return jdbcTemplate.query(selectSql, FILM_MAPPER);
+            return jdbcTemplate.query(sql, FILM_MAPPER);
         } catch (RuntimeException e) {
             return Collections.emptyList();
         }
@@ -48,12 +43,12 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film add(Film film) {
 
-        String sqlQuery = "INSERT INTO FilMS (NAME, DESCRIPTION, RELEASEDATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO FilMS (NAME, DESCRIPTION, RELEASEDATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
          jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"film_id"});
+            PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"film_id"});
             stmt.setString(1, film.getName());
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
@@ -70,26 +65,26 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void put(Film film) {
 
-        String selectSql = "update FILMS set NAME = ?, DESCRIPTION = ?, RELEASEDATE = ?, DURATION = ?, MPA_ID = ? where FILM_ID = ?";
+        String sql = "UPDATE FILMS SET NAME = ?, DESCRIPTION = ?, RELEASEDATE = ?, DURATION = ?, MPA_ID = ? WHERE FILM_ID = ?";
 
-        this.jdbcTemplate.update(selectSql, film.getName(), film.getDescription(), java.sql.Date.valueOf(film.getReleaseDate()),
+        this.jdbcTemplate.update(sql, film.getName(), film.getDescription(), java.sql.Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),film.getMpa().getId(), film.getId());
     }
 
     @Override
     public void del(Film film) {
 
-        String selectSql = "delete from FILMS where FILM_ID = ?";
+        String sql = "DELETE FROM FILMS WHERE FILM_ID = ?";
 
-        this.jdbcTemplate.update(selectSql,film.getId());
+        this.jdbcTemplate.update(sql,film.getId());
     }
 
     @Override
     public Optional <Film> findFilmById(Long filmId) {
 
-        String selectSql = "select * from FILMS AS F where F.FILM_ID = ?";
+        String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
 
-        Film film = jdbcTemplate.queryForObject(selectSql, FILM_MAPPER, filmId);
+        Film film = jdbcTemplate.queryForObject(sql, FILM_MAPPER, filmId);
 
         if (film != null) {
             log.info("Найден фильм: {} {}" , film.getId(), film.getName());
@@ -135,4 +130,10 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> sortFilm(Long size) {
         return null;
     }
+
+
+    public boolean existsById(Long filmId) {
+        return findFilmById(filmId).isPresent();
+    }
+
 }

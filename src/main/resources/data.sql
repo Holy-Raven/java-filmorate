@@ -10,19 +10,19 @@ INSERT INTO genre (name) VALUES ('Documentary');
 
 INSERT INTO genre (name) VALUES ('Action');
 
-INSERT INTO mpas (name)
+INSERT INTO mpa (name)
 VALUES ('G');
 
-INSERT INTO mpas (name)
+INSERT INTO mpa (name)
 VALUES ('PG');
 
-INSERT INTO mpas (name)
+INSERT INTO mpa (name)
 VALUES ('PG-13');
 
-INSERT INTO mpas (name)
+INSERT INTO mpa (name)
 VALUES ('R');
 
-INSERT INTO mpas (name)
+INSERT INTO mpa (name)
 VALUES ('NC-17');
 
 -- INSERT INTO USERS (LOGIN, NAME, EMAIL, BIRTHDAY)
