@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.util.Constant;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,19 +26,6 @@ public class FilmService implements FilmServiceInterface {
         this.mpaStorage = mpaStorage1;
     }
 
-//    public FilmService(@Qualifier("InMemoryFilmStorage") FilmStorage filmStorage) {
-//        this.filmStorage = filmStorage;
-//    }
-//    private long newId = 1;
-//
-//    private long getNewId() {
-//        return newId++;
-//    }
-//
-//    public void setNewId(int newId) {
-//        this.newId = newId;
-//    }
-
     @Override
     public List<Film> findAll() {
 
@@ -51,6 +39,11 @@ public class FilmService implements FilmServiceInterface {
         }
 
         return films;
+//
+//        return filmStorage.allFilms().stream().peek(
+//                film -> new Film(film.getId(), film.getName(), film.getDescription(),
+//                film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get()))
+//                .collect(Collectors.toList());
     }
 
     @Override

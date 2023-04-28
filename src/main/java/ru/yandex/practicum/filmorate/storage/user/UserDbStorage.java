@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -81,12 +81,15 @@ public class UserDbStorage implements UserStorage {
 
         String sql = "SELECT * FROM USERS WHERE USER_ID = ?";
 
-        User user = jdbcTemplate.queryForObject(sql, USER_MAPPER, userId);
+        try {
 
-        if (user != null) {
+            User user = jdbcTemplate.queryForObject(sql, USER_MAPPER, userId);
+
             log.info("Найден пользователь: {} {}" , user.getId(), user.getName());
             return Optional.of(user);
-        } else  {
+
+        } catch (EmptyResultDataAccessException exception) {
+
             log.info("Пользователь с идентификатором {} не найден.", userId);
             return Optional.empty();
         }
@@ -110,22 +113,23 @@ public class UserDbStorage implements UserStorage {
 //            return Optional.empty();
 //        }
     }
+//
+//
+//    @Override
+//    public User addFriends(Long user1, Long user2) {
+//
+//        return null;
+//    }
 
-
-    @Override
-    public User addFriends(Long user1, Long user2) {
-        return null;
-    }
-
-    @Override
-    public User delFriends(Long user1, Long user2) {
-        return null;
-    }
-
-    @Override
-    public List<User> friendsList(Long user) {
-        return null;
-    }
+//    @Override
+//    public User delFriends(Long user1, Long user2) {
+//        return null;
+//    }
+//
+//    @Override
+//    public List<User> friendsList(Long user) {
+//        return null;
+//    }
 
     public boolean existsById(Long userId) {
         return findUserById(userId).isPresent();

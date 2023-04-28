@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.mpa;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static ru.yandex.practicum.filmorate.util.Constant.MPA_MAPPER;
+
 
 @Repository("MpaStorage")
 public class MpaDbStorage implements MpaStorage {
@@ -27,15 +29,20 @@ public class MpaDbStorage implements MpaStorage {
 
         String selectSql = "SELECT * FROM MPA WHERE MPA_ID = ?";
 
-        Mpa mpa = jdbcTemplate.queryForObject(selectSql, MPA_MAPPER, id);
+        try {
 
-        if (mpa != null){
+            Mpa mpa = jdbcTemplate.queryForObject(selectSql, MPA_MAPPER, id);
+
             log.info("Найден mpa: {} {}" , mpa.getId(), mpa.getName());
             return Optional.of(mpa);
-        } else {
+
+        } catch (EmptyResultDataAccessException exception) {
+
             log.info("mpa с идентификатором {} не найден.", id);
             return Optional.empty();
         }
+
+
     }
     @Override
     public List<Mpa> findAll() {

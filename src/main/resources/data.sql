@@ -24,6 +24,3 @@ VALUES ('R');
 
 INSERT INTO mpa (name)
 VALUES ('NC-17');
-
--- INSERT INTO USERS (LOGIN, NAME, EMAIL, BIRTHDAY)
--- VALUES ('dolore','Nick Name', 'mail@mail.ru', '1946-08-20');

@@ -17,11 +17,11 @@ public interface UserStorage {
 
     Optional<User> findUserById(Long userId);
 
-    User addFriends(Long user1, Long user2);
-
-    User delFriends(Long user1, Long user2);
-
-    List<User> friendsList(Long user);
+//    User addFriends(Long user1, Long user2);
+//
+//    User delFriends(Long user1, Long user2);
+//
+//    List<User> friendsList(Long user);
 
     boolean existsById(Long id);
 }

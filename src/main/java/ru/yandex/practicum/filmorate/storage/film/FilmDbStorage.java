@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -84,15 +85,20 @@ public class FilmDbStorage implements FilmStorage {
 
         String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
 
-        Film film = jdbcTemplate.queryForObject(sql, FILM_MAPPER, filmId);
 
-        if (film != null) {
+        try {
+
+            Film film = jdbcTemplate.queryForObject(sql, FILM_MAPPER, filmId);
+
             log.info("Найден фильм: {} {}" , film.getId(), film.getName());
             return Optional.of(film);
-        } else {
-           log.info("Фильм с идентификатором {} не найден.", filmId);
+
+        } catch (EmptyResultDataAccessException exception) {
+
+            log.info("Фильм с идентификатором {} не найден.", filmId);
             return Optional.empty();
         }
+
 
 
 //        // выполняем запрос к базе данных.

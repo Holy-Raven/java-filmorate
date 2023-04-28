@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Friendship;
@@ -133,7 +134,28 @@ public class UserService implements UserServiceInterface {
 
         long user1Id = parseStringInLong(user1);
         long user2Id = parseStringInLong(user2);
-//
+
+        Friendship friendship = new Friendship(user1Id, user2Id);
+
+        if (friendshipStorage.isExist(friendship)) {
+
+            if (friendshipStorage.status(friendship)){
+                throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
+
+            } else {
+                friendshipStorage.put(friendship);
+                log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
+            }
+
+        } else {
+
+            friendshipStorage.add(friendship);
+            log.info("User №" + user2Id + "added to friends lists User №" + user1Id);
+        }
+
+        return findUserById(user1).get();
+
+
 //        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
 //            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
 //            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
@@ -148,11 +170,6 @@ public class UserService implements UserServiceInterface {
 //        log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
 //
 //        return userStorage.allUsers().get(user1Id);
-
-        Friendship friendship = new Friendship(user1Id, user2Id);
-
-
-        return null;
     }
 
     @Override

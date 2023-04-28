@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.friendship;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -70,17 +71,22 @@ public class FriendshipDbStorage implements FriendshipStorage {
         String sql = "SELECT * FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR SECOND_USER_ID = ? AND FIRST_USER_ID = ?";
 
-        friendship = jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirst_user_id(),
+        try {
+
+            friendship = jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirst_user_id(),
                      friendship.getSecond_user_id(), friendship.getSecond_user_id(), friendship.getFirst_user_id());
 
-        if (friendship != null) {
             log.info("Запись найдена: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
             return Optional.of(friendship);
-        } else {
+
+        } catch (EmptyResultDataAccessException exception) {
+
             log.info("Запись не найдена: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
             return Optional.empty();
         }
+
     }
+
 
     @Override
     public void deleteById(Friendship friendship) {

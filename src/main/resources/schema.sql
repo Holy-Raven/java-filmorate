@@ -44,7 +44,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS user_uindex
     ON users (email, login);
 
 CREATE TABLE IF NOT EXISTS friendship (
-    first_user_id       INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
-    second_user_id      INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
+    first_user_id       INTEGER NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
+    second_user_id      INTEGER NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
     status              BOOLEAN DEFAULT FALSE
 ); 
