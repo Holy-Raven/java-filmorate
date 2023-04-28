@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import java.util.List;
@@ -39,7 +40,7 @@ public class MpaDbStorage implements MpaStorage {
         } catch (EmptyResultDataAccessException exception) {
 
             log.info("mpa с идентификатором {} не найден.", id);
-            return Optional.empty();
+            throw new MpaNotFoundException("Mpa с id " +  id + " не найден");
         }
 
 
@@ -50,3 +51,4 @@ public class MpaDbStorage implements MpaStorage {
         return jdbcTemplate.query(selectSql, MPA_MAPPER);
     }
 }
+

@@ -20,7 +20,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
     private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
-
     public FriendshipDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
 
@@ -29,10 +28,10 @@ public class FriendshipDbStorage implements FriendshipStorage {
     @Override
     public List<Long> findAllById(long id) {
 
-        String sqlQuery = "SELECT SECOND_USER_ID FROM FRIENDSHIP WHERE FIRST_USER_ID = ? " +
-                          "UNION SELECT FIRST_USER_ID FROM FRIENDSHIP WHERE SECOND_USER_ID = ? AND STATUS = true";
+        String sql = "SELECT SECOND_USER_ID FROM FRIENDSHIP WHERE  FIRST_USER_ID =? AND STATUS = TRUE " +
+                     "UNION SELECT FIRST_USER_ID FROM FRIENDSHIP WHERE SECOND_USER_ID = ?";
 
-        List<Friendship> friendships = jdbcTemplate.query(sqlQuery, FRIENDSHIP_MAPPER, id);
+        List<Friendship> friendships = jdbcTemplate.query(sql, FRIENDSHIP_MAPPER, id);
 
         List<Long> friendList = new ArrayList<>();
 
@@ -42,7 +41,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         return friendList;
     }
-
     @Override
     public void add(Friendship friendship) {
 
@@ -70,7 +68,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         String sql = "SELECT * FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR SECOND_USER_ID = ? AND FIRST_USER_ID = ?";
-
         try {
 
             friendship = jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirst_user_id(),
@@ -84,9 +81,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
             log.info("Запись не найдена: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
             return Optional.empty();
         }
-
     }
-
 
     @Override
     public void deleteById(Friendship friendship) {

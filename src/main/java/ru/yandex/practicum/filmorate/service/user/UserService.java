@@ -175,9 +175,22 @@ public class UserService implements UserServiceInterface {
     @Override
     public User delFriends(String user1, String user2) {
 
-//        long user1Id = parseStringInLong(user1);
-//        long user2Id = parseStringInLong(user2);
-//
+        long user1Id = parseStringInLong(user1);
+        long user2Id = parseStringInLong(user2);
+
+        Friendship friendship = new Friendship(user1Id, user2Id);
+
+        if (friendshipStorage.isExist(friendship)) {
+
+                log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
+                friendshipStorage.deleteById(friendship);
+
+        } else {
+            log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
+            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
+
+        }
+
 //        if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
 //            log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
 //            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
@@ -192,12 +205,23 @@ public class UserService implements UserServiceInterface {
 //        log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
 //
 //        return userStorage.delFriends(user1Id,user2Id);
-        return null;
+
+        return findUserById(user1).get();
     }
 
     @Override
     public List<User> friendsList(String user) {
 
+        long userId = parseStringInLong(user);
+
+        List<User> friendsList = new ArrayList<>();
+
+        for (Long friend : friendshipStorage.findAllById(userId)) {
+            friendsList.add(userStorage.findUserById(friend).get());
+        }
+
+        log.info("List friends User №" + userId);
+        return friendsList;
 //        long userId = parseStringInLong(user);
 //
 //        List<User> friendsList = new ArrayList<>();
@@ -208,11 +232,27 @@ public class UserService implements UserServiceInterface {
 //
 //        log.info("List friends User №" + userId);
 //        return userStorage.friendsList(userId);
-        return null;
+
     }
 
     @Override
     public List<User> commonFriends(String user1, String user2) {
+
+
+        long user1Id = parseStringInLong(user1);
+        long user2Id = parseStringInLong(user2);
+
+        List<User> commonFriends = new ArrayList<>();
+
+        for (Long friend : friendshipStorage.findAllById(user1Id)) {
+            if (friendshipStorage.findAllById(user1Id).contains(friend)) {
+                commonFriends.add(userStorage.findUserById(friend).get());
+            }
+        }
+        log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
+        return commonFriends;
+
+
 
 //        long user1Id = parseStringInLong(user1);
 //        long user2Id = parseStringInLong(user2);
@@ -226,7 +266,7 @@ public class UserService implements UserServiceInterface {
 //        }
 //        log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
 //        return commonFriends;
-        return null;
+
     }
 
     public Long parseStringInLong(String str) {
