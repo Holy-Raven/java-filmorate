@@ -11,9 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -27,19 +25,6 @@ public class UserService implements UserServiceInterface {
         this.userStorage = userStorage;
         this.friendshipStorage = friendshipStorage;
     }
-
-//    public UserService(@Qualifier("InMemoryUserStorage") UserStorage userStorage) {
-//        this.userStorage = userStorage;
-//    }
-//    private long newId = 1;
-//
-//    private long getNewId() {
-//        return newId++;
-//    }
-//
-//    public void setNewId(int newId) {
-//        this.newId = newId;
-//    }
 
     @Override
     public List<User> findAll() {
@@ -156,6 +141,19 @@ public class UserService implements UserServiceInterface {
         return findUserById(user1).get();
 
 
+//        if (!friendStorage.isExist(friendship)) {
+//            friendStorage.save(friendship);
+//            log.info("Пользователь: id={} отправил запрос на дружбу пользователю: id={}", userId, friendId);
+
+//        } else if (!friendStorage.isConfirmed(friendship)) {
+//            friendStorage.confirm(friendship);
+//            log.info("Пользователь: id={} и пользователь: id={} теперь друзья", userId, friendId);
+
+//        } else {
+//            throw new DataUpdateException("Пользователи уже являются друзьями");
+//        }
+//        return getUserOrThrow(friendId);
+//    }
 //        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
 //            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
 //            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
@@ -181,30 +179,13 @@ public class UserService implements UserServiceInterface {
         Friendship friendship = new Friendship(user1Id, user2Id);
 
         if (friendshipStorage.isExist(friendship)) {
-
-                log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
-                friendshipStorage.deleteById(friendship);
+            log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
+            friendshipStorage.deleteById(friendship);
 
         } else {
             log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
             throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
-
         }
-
-//        if (!userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
-//            log.error("User №" + user2Id + " and User №" + user1Id + " not friends");
-//            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " not friends");
-//        }
-//
-//        log.info("User №" + user2Id + "removed from friends list User №" + user1Id);
-//        //findUserById(user1).getFriends().remove(user2Id);
-//
-//        log.info("User №" + user1Id + "removed from friends list User №" + user2Id);
-//        //findUserById(user2).getFriends().remove(user1Id);
-//
-//        log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
-//
-//        return userStorage.delFriends(user1Id,user2Id);
 
         return findUserById(user1).get();
     }
@@ -222,50 +203,26 @@ public class UserService implements UserServiceInterface {
 
         log.info("List friends User №" + userId);
         return friendsList;
-//        long userId = parseStringInLong(user);
-//
-//        List<User> friendsList = new ArrayList<>();
-//
-//        for (Long friend : userStorage.allUsers().get(userId).getFriends()) {
-//            friendsList.add(userStorage.allUsers().get(friend));
-//        }
-//
-//        log.info("List friends User №" + userId);
-//        return userStorage.friendsList(userId);
 
     }
 
     @Override
     public List<User> commonFriends(String user1, String user2) {
 
-
         long user1Id = parseStringInLong(user1);
         long user2Id = parseStringInLong(user2);
 
+        Set<Long> common = new HashSet<>(friendshipStorage.findAllById(user1Id));
+        common.retainAll(friendshipStorage.findAllById(user2Id));
+
         List<User> commonFriends = new ArrayList<>();
 
-        for (Long friend : friendshipStorage.findAllById(user1Id)) {
-            if (friendshipStorage.findAllById(user1Id).contains(friend)) {
-                commonFriends.add(userStorage.findUserById(friend).get());
-            }
+        for (Long aLong : common) {
+            commonFriends.add(userStorage.findUserById(aLong).get());
         }
+
         log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
         return commonFriends;
-
-
-
-//        long user1Id = parseStringInLong(user1);
-//        long user2Id = parseStringInLong(user2);
-//
-//        List<User> commonFriends = new ArrayList<>();
-//
-//        for (Long friend : userStorage.allUsers().get(user1Id).getFriends()) {
-//            if (userStorage.allUsers().get(user2Id).getFriends().contains(friend)) {
-//                commonFriends.add(userStorage.allUsers().get(friend));
-//            }
-//        }
-//        log.info("List of mutual friends User №" + user1Id + " and User №" + user2Id + "ready");
-//        return commonFriends;
 
     }
 

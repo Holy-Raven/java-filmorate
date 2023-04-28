@@ -28,16 +28,11 @@ public class FriendshipDbStorage implements FriendshipStorage {
     @Override
     public List<Long> findAllById(long id) {
 
-        String sql = "SELECT SECOND_USER_ID FROM FRIENDSHIP WHERE  FIRST_USER_ID =? AND STATUS = TRUE " +
-                     "UNION SELECT FIRST_USER_ID FROM FRIENDSHIP WHERE SECOND_USER_ID = ?";
+        String sql = "SELECT SECOND_USER_ID FROM FRIENDSHIP WHERE FIRST_USER_ID = ? " +
+                     "UNION SELECT FIRST_USER_ID FROM FRIENDSHIP WHERE SECOND_USER_ID = ? AND STATUS = TRUE";
 
-        List<Friendship> friendships = jdbcTemplate.query(sql, FRIENDSHIP_MAPPER, id);
-
-        List<Long> friendList = new ArrayList<>();
-
-        for (Friendship friendship : friendships) {
-            friendList.add(friendship.getFirst_user_id());
-        }
+        List<Long> friendList = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("SECOND_USER_ID"), id, id);
+        log.info("Список друзей пользователя: {}" , id);
 
         return friendList;
     }
@@ -55,9 +50,10 @@ public class FriendshipDbStorage implements FriendshipStorage {
     @Override
     public void put(Friendship friendship) {
 
-        String sql = "UPDATE FRiENDSHIP SET STATUS = ? WHERE  FIRST_USER_ID = ? and SECOND_USER_ID = ?";
+        String sql = "UPDATE FRiENDSHIP SET STATUS = ? WHERE FIRST_USER_ID = ? and SECOND_USER_ID = ? OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 
-        jdbcTemplate.update(sql, true, friendship.getFirst_user_id(), friendship.getSecond_user_id());
+        jdbcTemplate.update(sql, true, friendship.getFirst_user_id(), friendship.getSecond_user_id(),
+                friendship.getSecond_user_id(), friendship.getFirst_user_id());
 
         log.info("Обновлен статус дружбы на подтвержденный у пользователей: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
 
@@ -88,7 +84,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
         String sql = "DELETE FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 
-        jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirst_user_id(),
+        jdbcTemplate.update(sql, friendship.getFirst_user_id(),
                 friendship.getSecond_user_id(), friendship.getSecond_user_id(), friendship.getFirst_user_id());
 
         log.info("Больше не друзья пользователи: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
