@@ -28,11 +28,11 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Optional<Mpa> findById(long id) {
 
-        String selectSql = "SELECT * FROM MPA WHERE MPA_ID = ?";
+        String sql = "SELECT * FROM MPA WHERE MPA_ID = ?";
 
         try {
 
-            Mpa mpa = jdbcTemplate.queryForObject(selectSql, MPA_MAPPER, id);
+            Mpa mpa = jdbcTemplate.queryForObject(sql, MPA_MAPPER, id);
 
             log.info("Найден mpa: {} {}" , mpa.getId(), mpa.getName());
             return Optional.of(mpa);
@@ -42,13 +42,12 @@ public class MpaDbStorage implements MpaStorage {
             log.info("mpa с идентификатором {} не найден.", id);
             throw new MpaNotFoundException("Mpa с id " +  id + " не найден");
         }
-
-
     }
+
     @Override
     public List<Mpa> findAll() {
-        String selectSql = "SELECT * FROM MPA ORDER BY MPA_ID";
-        return jdbcTemplate.query(selectSql, MPA_MAPPER);
+        String sql = "SELECT * FROM MPA ORDER BY MPA_ID";
+        return jdbcTemplate.query(sql, MPA_MAPPER);
     }
 }
 

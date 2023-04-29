@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS genre (
 CREATE UNIQUE INDEX IF NOT EXISTS film_uindex
     ON films (name);
 
-CREATE TABLE IF NOT EXISTS genre_list (
+CREATE TABLE IF NOT EXISTS films_genre (
     film_id             INTEGER REFERENCES films (film_id) ON DELETE CASCADE,
     genre_id            INTEGER REFERENCES genre (genre_id) ON DELETE RESTRICT
 );

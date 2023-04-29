@@ -38,13 +38,6 @@ public class Constant {
         return mpa;
     };
 
-    public static final RowMapper<Genre> GENRE_MAPPER = (ResultSet rs, int rowNum) -> {
-
-        Genre genre = new Genre(rs.getLong("genre_id"),
-                rs.getString("name"));
-        return genre;
-    };
-
     public static final RowMapper<Friendship> FRIENDSHIP_MAPPER = (ResultSet rs, int rowNum) -> {
 
         Friendship friendship = new Friendship(rs.getLong("first_user_id"),
@@ -52,5 +45,10 @@ public class Constant {
         return friendship;
     };
 
+    public static final RowMapper<Genre> GENRE_MAPPER = (ResultSet rs, int rowNum) -> {
 
+        Genre genre = new Genre(rs.getLong("genre_id"),
+                rs.getString("name"));
+        return genre;
+    };
 }
