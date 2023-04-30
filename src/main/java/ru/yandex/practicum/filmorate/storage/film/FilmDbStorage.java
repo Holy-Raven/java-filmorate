@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static ru.yandex.practicum.filmorate.util.Constant.FILM_MAPPER;
+import static ru.yandex.practicum.filmorate.util.Constant.GENRE_MAPPER;
 
 @Repository("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
@@ -25,7 +27,6 @@ public class FilmDbStorage implements FilmStorage {
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-
     }
 
     @Override
@@ -36,6 +37,7 @@ public class FilmDbStorage implements FilmStorage {
         try {
             log.info("Список пользователей");
             return jdbcTemplate.query(sql, FILM_MAPPER);
+
         } catch (RuntimeException e) {
             return Collections.emptyList();
         }
@@ -59,7 +61,16 @@ public class FilmDbStorage implements FilmStorage {
 
         }, keyHolder);
 
-         return new Film(keyHolder.getKey().longValue(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa());
+         Film newFilm = new Film(keyHolder.getKey().longValue(), film.getName(), film.getDescription(),
+                 film.getReleaseDate(), film.getDuration(), film.getMpa());
+
+         newFilm.getGenres().addAll(film.getGenres());
+
+        for (Genre genre : newFilm.getGenres()) {
+            addGenreToFilm(newFilm.getId(), genre.getId());
+        }
+
+         return newFilm;
 
     }
 
@@ -85,7 +96,6 @@ public class FilmDbStorage implements FilmStorage {
 
         String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
 
-
         try {
 
             Film film = jdbcTemplate.queryForObject(sql, FILM_MAPPER, filmId);
@@ -98,9 +108,6 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Фильм с идентификатором {} не найден.", filmId);
             return Optional.empty();
         }
-
-
-
 //        // выполняем запрос к базе данных.
 //        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS WHERE FILM_ID = ?", filmId);
 //
@@ -123,20 +130,58 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
+    public void addGenreToFilm(long film, long genre) {
+
+            String sqlInsert = "INSERT INTO FILMS_GENRE(FILM_ID, GENRE_ID) VALUES (?, ?)";
+
+            jdbcTemplate.update(sqlInsert, film, genre);
+
+            log.info("Film id {} add Genre id {}" , film, genre);
+    }
+
+    @Override
+    public void delGenresListFromFilm(long film) {
+
+        String sql = "DELETE FROM FILMS_GENRE WHERE FILM_ID = ?";
+
+        jdbcTemplate.update(sql, film);
+
+        log.info("Film id {} clear Genre List" , film);
+
+    }
+
+    @Override
+    public List<Genre> findGenreListFilmById(long film) {
+
+        String sql = "SELECT g.* FROM FILMS_GENRE AS fg " +
+                     "JOIN GENRE AS g ON fg.GENRE_ID = g.GENRE_ID " +
+                     "WHERE fg.FILM_ID =? " +
+                     "ORDER BY g.GENRE_ID";
+
+        List<Genre> genreList = jdbcTemplate.query(sql, GENRE_MAPPER, film);
+
+        log.info("Film id {} Genre List" , film);
+
+        return genreList;
+
+    }
+
+    @Override
     public Film addLikeFilm(Long film, Long user) {
         return null;
     }
-
     @Override
     public Film delLikeFilm(Long film, Long user) {
         return null;
     }
-
+    @Override
+    public List<Long> findLikesByFilm(long film) {
+        return null;
+    }
     @Override
     public List<Film> sortFilm(Long size) {
         return null;
     }
-
 
     public boolean existsById(Long filmId) {
         return findFilmById(filmId).isPresent();

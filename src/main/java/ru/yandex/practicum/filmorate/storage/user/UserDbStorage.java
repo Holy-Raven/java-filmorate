@@ -113,26 +113,8 @@ public class UserDbStorage implements UserStorage {
 //            return Optional.empty();
 //        }
     }
-//
-//
-//    @Override
-//    public User addFriends(Long user1, Long user2) {
-//
-//        return null;
-//    }
-
-//    @Override
-//    public User delFriends(Long user1, Long user2) {
-//        return null;
-//    }
-//
-//    @Override
-//    public List<User> friendsList(Long user) {
-//        return null;
-//    }
 
     public boolean existsById(Long userId) {
         return findUserById(userId).isPresent();
     }
-
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +79,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public void deleteById(Friendship friendship) {
+    public void delById(Friendship friendship) {
         String sql = "DELETE FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 

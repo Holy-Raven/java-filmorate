@@ -13,7 +13,7 @@ public interface FriendshipStorage {
 
     Optional<Friendship> findById(Friendship friendship);
 
-    void deleteById(Friendship friendship);
+    void delById(Friendship friendship);
 
     boolean status(Friendship friendship);
 

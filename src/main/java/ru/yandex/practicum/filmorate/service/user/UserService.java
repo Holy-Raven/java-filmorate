@@ -139,35 +139,6 @@ public class UserService implements UserServiceInterface {
         }
 
         return findUserById(user1).get();
-
-
-//        if (!friendStorage.isExist(friendship)) {
-//            friendStorage.save(friendship);
-//            log.info("Пользователь: id={} отправил запрос на дружбу пользователю: id={}", userId, friendId);
-
-//        } else if (!friendStorage.isConfirmed(friendship)) {
-//            friendStorage.confirm(friendship);
-//            log.info("Пользователь: id={} и пользователь: id={} теперь друзья", userId, friendId);
-
-//        } else {
-//            throw new DataUpdateException("Пользователи уже являются друзьями");
-//        }
-//        return getUserOrThrow(friendId);
-//    }
-//        if (userStorage.allUsers().get(user1Id).getFriends().contains(user2Id)) {
-//            log.error("User №" + user2Id + " and User №" + user1Id + " already friends");
-//            throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
-//        }
-//
-//        log.info("User №" + user2Id + "added to friends lists User №" + user1Id);
-//        findUserById(user1).getFriends().add(user2Id);
-//
-//        log.info("User №" + user1Id + "added to friends lists User №" + user2Id);
-//        findUserById(user2).getFriends().add(user1Id);
-//
-//        log.info("User №" + user1Id + "and User №" + user2Id + "now friends");
-//
-//        return userStorage.allUsers().get(user1Id);
     }
 
     @Override
@@ -180,7 +151,7 @@ public class UserService implements UserServiceInterface {
 
         if (friendshipStorage.isExist(friendship)) {
             log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
-            friendshipStorage.deleteById(friendship);
+            friendshipStorage.delById(friendship);
 
         } else {
             log.error("User №" + user2Id + " and User №" + user1Id + " not friends");

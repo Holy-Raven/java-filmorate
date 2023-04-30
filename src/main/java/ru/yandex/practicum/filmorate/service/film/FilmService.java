@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.util.Constant;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -21,9 +22,12 @@ public class FilmService implements FilmServiceInterface {
 
     private final MpaStorage mpaStorage;
 
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage1) {
+    private final GenreStorage genreStorage;
+
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage1, GenreStorage genreStorage) {
         this.filmStorage = filmStorage;
         this.mpaStorage = mpaStorage1;
+        this.genreStorage = genreStorage;
     }
 
     @Override
@@ -33,17 +37,14 @@ public class FilmService implements FilmServiceInterface {
 
         for (Film film : filmStorage.allFilms()) {
 
-            films.add(new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                    mpaStorage.findById(film.getMpa().getId()).get()));
+            Film newFilm = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                    mpaStorage.findById(film.getMpa().getId()).get());
 
+            newFilm.getGenres().addAll(filmStorage.findGenreListFilmById(newFilm.getId()));
+            films.add(newFilm);
         }
 
         return films;
-//
-//        return filmStorage.allFilms().stream().peek(
-//                film -> new Film(film.getId(), film.getName(), film.getDescription(),
-//                film.getReleaseDate(), film.getDuration(), mpaStorage.findById(film.getMpa().getId()).get()))
-//                .collect(Collectors.toList());
     }
 
     @Override
@@ -70,11 +71,14 @@ public class FilmService implements FilmServiceInterface {
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
-        film = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+        Film newFilm = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 mpaStorage.findById(film.getMpa().getId()).get());
 
+        newFilm.getGenres().addAll(film.getGenres());
+        newFilm = updateGenre(film);
+
         log.info("Added Film: {}", film.getName());
-        return filmStorage.add(film);
+        return filmStorage.add(newFilm);
     }
 
     @Override
@@ -84,11 +88,16 @@ public class FilmService implements FilmServiceInterface {
 
             filmStorage.put(film);
 
-            film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                    mpaStorage.findById(film.getMpa().getId()).get());
+            Film newFilm = updateGenre(film);
+
+            filmStorage.delGenresListFromFilm(newFilm.getId());
+
+            for (Genre genre : newFilm.getGenres()) {
+                filmStorage.addGenreToFilm(newFilm.getId(), genre.getId());
+            }
 
             log.info("Updated movie description: {}", film.getName());
-            return film;
+            return newFilm;
         } else {
             log.error("There is no such film in our list of films");
             throw new FilmNotFoundException("There is no such film in our list of films");
@@ -100,7 +109,10 @@ public class FilmService implements FilmServiceInterface {
     public Film delete(Film film) {
 
         if (filmStorage.existsById(film.getId())) {
+
+            filmStorage.delGenresListFromFilm(film.getId());
             filmStorage.del(film);
+
         } else {
             log.error("There is no such film in our list of films");
             throw new FilmNotFoundException("There is no such film in our list of films");
@@ -118,11 +130,14 @@ public class FilmService implements FilmServiceInterface {
 
         if (filmStorage.existsById(id)) {
 
-           Film film = filmStorage.findFilmById(id).get();
-           film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                   mpaStorage.findById(film.getMpa().getId()).get());
+            Film film = filmStorage.findFilmById(id).get();
 
-           return Optional.of(film);
+            film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                    mpaStorage.findById(film.getMpa().getId()).get());
+
+            film.getGenres().addAll(filmStorage.findGenreListFilmById(id));
+
+            return Optional.of(film);
         } else {
             throw new FilmNotFoundException("There is no such film in our list of films");
         }
@@ -193,4 +208,24 @@ public class FilmService implements FilmServiceInterface {
         return a;
     }
 
+    public Film updateGenre(Film film) {
+
+        Film newFilm = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                mpaStorage.findById(film.getMpa().getId()).get());
+
+        newFilm.getGenres().addAll(film.getGenres());
+
+        if (!film.getGenres().isEmpty()) {
+            for (Genre genre : film.getGenres()) {
+
+                if (film.getGenres().contains(genreStorage.findById(genre.getId()).get())) {
+                    newFilm.getGenres().remove(genreStorage.findById(genre.getId()).get());
+                    newFilm.getGenres().add(genreStorage.findById(genre.getId()).get());
+                } else {
+                    newFilm.getGenres().add(genreStorage.findById(genre.getId()).get());
+                }
+            }
+        }
+        return newFilm;
+    }
 }
