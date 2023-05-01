@@ -51,4 +51,12 @@ public class Constant {
                 rs.getString("name"));
         return genre;
     };
+
+    public static final RowMapper<Like> LIKE_MAPPER = (ResultSet rs, int rowNum) -> {
+
+        Like like = new Like(rs.getLong("film_id"),
+                rs.getLong("user_id"));
+
+        return like;
+    };
 }

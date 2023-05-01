@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.BusinessLogicException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -43,7 +44,7 @@ public class FilmService implements FilmServiceInterface {
                     mpaStorage.findById(film.getMpa().getId()).get());
 
             newFilm.getGenres().addAll(filmStorage.findGenreListFilmById(newFilm.getId()));
-
+            newFilm.getLikes().addAll(likeStorage.findLikesListFilmById(film.getId()));
 
             films.add(newFilm);
         }
@@ -99,7 +100,7 @@ public class FilmService implements FilmServiceInterface {
                 filmStorage.addGenreToFilm(newFilm.getId(), genre.getId());
             }
 
-
+            newFilm.getLikes().addAll(likeStorage.findLikesListFilmById(film.getId()));
 
             log.info("Updated movie description: {}", film.getName());
             return newFilm;
@@ -141,7 +142,7 @@ public class FilmService implements FilmServiceInterface {
                     mpaStorage.findById(film.getMpa().getId()).get());
 
             film.getGenres().addAll(filmStorage.findGenreListFilmById(id));
-
+            film.getLikes().addAll(likeStorage.findLikesListFilmById(film.getId()));
 
             return Optional.of(film);
         } else {
@@ -160,39 +161,54 @@ public class FilmService implements FilmServiceInterface {
     }
 
     @Override
-    public Film addLikeFilm(String film, String user) {
+    public Film addLikeFilm(String film_id, String user_id) {
 
-//        long filmId = parseStringInLong(film);
-//        long userId = parseStringInLong(user);
-//
-//        if (filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
-//            log.error("The user has already liked this movie");
-//            throw new BusinessLogicException("The user has already liked this movie");
-//        }
-//
-//        log.info("User №" + userId + " I liked the movie №" + filmId);
-//
-//        return filmStorage.addLikeFilm(filmId,userId);
+        long filmId = parseStringInLong(film_id);
+        long userId = parseStringInLong(user_id);
 
-        return null;
+        Film film = filmStorage.findFilmById(filmId).get();
+
+        if (likeStorage.isExist(filmId, userId)){
+
+            log.error("The user has already liked this movie");
+            throw new BusinessLogicException("The user has already liked this movie");
+
+        } else {
+
+            likeStorage.addLikeFilm(filmId, userId);
+
+            film = new Film(film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                    mpaStorage.findById(film.getMpa().getId()).get());
+
+            film.getGenres().addAll(filmStorage.findGenreListFilmById(film.getId()));
+            film.getLikes().addAll(likeStorage.findLikesListFilmById(film.getId()));
+
+        }
+
+        log.info("User № {} liked the film № {}", userId, filmId);
+        return film;
     }
 
     @Override
-    public Film delLikeFilm(String film, String user) {
+    public Film delLikeFilm(String film_id, String user_id) {
 
-//        long filmId = parseStringInLong(film);
-//        long userId = parseStringInLong(user);
-//
-//        if (!filmStorage.allFilms().get(filmId).getLikes().contains(userId)) {
-//            log.error("The user did not like this movie");
-//            throw new BusinessLogicException("The user did not like this movie");
-//        }
-//
-//        log.info("User №" + userId + " removed the varnish from the film №" + filmId);
-//
-//        return filmStorage.delLikeFilm(filmId,userId);
 
-        return null;
+        long filmId = parseStringInLong(film_id);
+        long userId = parseStringInLong(user_id);
+
+        Film film = filmStorage.findFilmById(filmId).get();
+
+        if (!likeStorage.isExist(filmId, userId)){
+
+            log.error("The user did not like this movie");
+            throw new BusinessLogicException("The user did not like this movie");
+
+        } else {
+            log.info("User id {} deleted a like from Film id {}" , user_id, film_id);
+            likeStorage.delLikeFilm(filmId, userId);
+        }
+
+        return film;
     }
 
     public Long parseStringInLong(String str) {
