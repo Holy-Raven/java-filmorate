@@ -50,7 +50,7 @@ public class FilmDbStorage implements FilmStorage {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-         jdbcTemplate.update(connection -> {
+        jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"film_id"});
             stmt.setString(1, film.getName());
             stmt.setString(2, film.getDescription());
@@ -61,11 +61,10 @@ public class FilmDbStorage implements FilmStorage {
 
         }, keyHolder);
 
-         Film newFilm = new Film(keyHolder.getKey().longValue(), film.getName(), film.getDescription(),
+        Film newFilm = new Film(keyHolder.getKey().longValue(), film.getName(), film.getDescription(),
                  film.getReleaseDate(), film.getDuration(), film.getMpa());
 
-         newFilm.getGenres().addAll(film.getGenres());
-
+        newFilm.getGenres().addAll(film.getGenres());
         for (Genre genre : newFilm.getGenres()) {
             addGenreToFilm(newFilm.getId(), genre.getId());
         }
@@ -166,18 +165,7 @@ public class FilmDbStorage implements FilmStorage {
 
     }
 
-    @Override
-    public Film addLikeFilm(Long film, Long user) {
-        return null;
-    }
-    @Override
-    public Film delLikeFilm(Long film, Long user) {
-        return null;
-    }
-    @Override
-    public List<Long> findLikesByFilm(long film) {
-        return null;
-    }
+
     @Override
     public List<Film> sortFilm(Long size) {
         return null;

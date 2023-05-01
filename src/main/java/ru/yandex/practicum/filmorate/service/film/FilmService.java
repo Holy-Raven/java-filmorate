@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.util.Constant;
 
@@ -19,15 +20,16 @@ import java.util.*;
 public class FilmService implements FilmServiceInterface {
 
     private final FilmStorage filmStorage;
-
     private final MpaStorage mpaStorage;
-
     private final GenreStorage genreStorage;
+    private final LikeStorage likeStorage;
 
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage1, GenreStorage genreStorage) {
+
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage1, GenreStorage genreStorage, LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.mpaStorage = mpaStorage1;
         this.genreStorage = genreStorage;
+        this.likeStorage = likeStorage;
     }
 
     @Override
@@ -41,6 +43,8 @@ public class FilmService implements FilmServiceInterface {
                     mpaStorage.findById(film.getMpa().getId()).get());
 
             newFilm.getGenres().addAll(filmStorage.findGenreListFilmById(newFilm.getId()));
+
+
             films.add(newFilm);
         }
 
@@ -91,10 +95,11 @@ public class FilmService implements FilmServiceInterface {
             Film newFilm = updateGenre(film);
 
             filmStorage.delGenresListFromFilm(newFilm.getId());
-
             for (Genre genre : newFilm.getGenres()) {
                 filmStorage.addGenreToFilm(newFilm.getId(), genre.getId());
             }
+
+
 
             log.info("Updated movie description: {}", film.getName());
             return newFilm;
@@ -136,6 +141,7 @@ public class FilmService implements FilmServiceInterface {
                     mpaStorage.findById(film.getMpa().getId()).get());
 
             film.getGenres().addAll(filmStorage.findGenreListFilmById(id));
+
 
             return Optional.of(film);
         } else {

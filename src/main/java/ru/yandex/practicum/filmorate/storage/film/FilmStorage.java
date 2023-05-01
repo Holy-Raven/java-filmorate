@@ -24,12 +24,6 @@ public interface FilmStorage {
 
     void delGenresListFromFilm(long filmId);
 
-    List<Long> findLikesByFilm(long filmId);
-
-    Film addLikeFilm(Long film, Long user);
-
-    Film delLikeFilm(Long film, Long user);
-
     List<Film> sortFilm(Long size);
 
     boolean existsById(Long id);
