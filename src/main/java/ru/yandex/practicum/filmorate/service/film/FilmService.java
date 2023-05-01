@@ -15,6 +15,9 @@ import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 import ru.yandex.practicum.filmorate.util.Constant;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static ru.yandex.practicum.filmorate.util.Constant.FILM_MAPPER;
 
 @Service
 @Slf4j
@@ -76,11 +79,7 @@ public class FilmService implements FilmServiceInterface {
             throw new ValidationException("The release date may not be earlier than December 28, 1895");
         }
 
-        Film newFilm = new Film(null, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                mpaStorage.findById(film.getMpa().getId()).get());
-
-        newFilm.getGenres().addAll(film.getGenres());
-        newFilm = updateGenre(film);
+        Film newFilm = updateGenre(film);
 
         log.info("Added Film: {}", film.getName());
         return filmStorage.add(newFilm);
@@ -152,12 +151,15 @@ public class FilmService implements FilmServiceInterface {
 
     @Override
     public List<Film> sortFilm(String count) {
-//
-//        long size = parseStringInLong(count);
-//
-//        log.info("Cписок фильмов отсортированный по их популярности");
-//        return filmStorage.sortFilm(size);
-        return null;
+
+        long size = parseStringInLong(count);
+
+        log.info("List popular Films");
+        return findAll().stream()
+                .sorted((film1, film2) -> film2.getLikes().size()
+                                        - film1.getLikes().size())
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     @Override

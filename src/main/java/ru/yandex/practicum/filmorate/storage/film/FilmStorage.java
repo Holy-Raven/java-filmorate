@@ -24,7 +24,5 @@ public interface FilmStorage {
 
     void delGenresListFromFilm(long filmId);
 
-    List<Film> sortFilm(Long size);
-
     boolean existsById(Long id);
 }

@@ -10,6 +10,7 @@ import java.time.Month;
 public class Constant {
 
     public static final LocalDate BEGIN_TIME = LocalDate.of(1895,  Month.DECEMBER,28);
+
     public static final RowMapper<User> USER_MAPPER = (ResultSet rs, int rowNum) -> {
 
         User user = new User(rs.getLong("user_id"),

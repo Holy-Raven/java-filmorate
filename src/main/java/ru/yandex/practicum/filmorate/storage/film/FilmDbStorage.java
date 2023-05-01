@@ -35,8 +35,11 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT * FROM FILMS";
 
         try {
+
             log.info("Список пользователей");
             return jdbcTemplate.query(sql, FILM_MAPPER);
+
+
 
         } catch (RuntimeException e) {
             return Collections.emptyList();
@@ -163,12 +166,6 @@ public class FilmDbStorage implements FilmStorage {
 
         return genreList;
 
-    }
-
-
-    @Override
-    public List<Film> sortFilm(Long size) {
-        return null;
     }
 
     public boolean existsById(Long filmId) {
