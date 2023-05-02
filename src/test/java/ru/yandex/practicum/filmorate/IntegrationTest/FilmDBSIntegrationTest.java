@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FilmDBSIntegrationTest {
 
     final FilmStorage filmStorage;
+
+    final GenreStorage genreStorage;
     static Film film_1;
     static Film film_2;
 
@@ -40,6 +44,7 @@ class FilmDBSIntegrationTest {
             filmStorage.del(film);
         }
     }
+
     @Test
     void testAddFilm() {
 
@@ -125,7 +130,29 @@ class FilmDBSIntegrationTest {
         assertFalse(filmOptional.isPresent());
 
     }
+    @Test
+    void testGenreFilm(){
+
+        final Film dbFilm_1 = filmStorage.add(film_1);
+
+        final Genre genre_1 = genreStorage.findById(1L).get();
+        final Genre genre_2 = genreStorage.findById(1L).get();
+
+        filmStorage.addGenreToFilm(dbFilm_1.getId(), genre_1.getId());
+        filmStorage.addGenreToFilm(dbFilm_1.getId(), genre_2.getId());
+
+        List<Genre> genreList = filmStorage.findGenreListFilmById(dbFilm_1.getId());
+
+        assertThat(genreList.size()).isEqualTo(2);
+        assertThat(genreList.get(0)).isEqualTo(genre_1);
+        assertThat(genreList.get(1)).isEqualTo(genre_2);
+
+        filmStorage.delGenresListFromFilm(dbFilm_1.getId());
+
+        genreList = filmStorage.findGenreListFilmById(dbFilm_1.getId());
+
+        assertTrue(genreList.isEmpty());
 
 
-
+    }
 }

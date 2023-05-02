@@ -43,13 +43,13 @@ public class FriendshipDBSIntegrationTest {
         user_3 = new User(null, "email@user_3", "name_user_3", "login_user_3", (LocalDate.of(2005, 8, 4)));
 
     }
-
     @AfterEach
     void afterEach() {
         for (User user : userStorage.allUsers()) {
             userStorage.del(user);
         }
     }
+
     @Test
     void testAddAndFindFriends() {
 

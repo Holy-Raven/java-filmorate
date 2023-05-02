@@ -21,7 +21,7 @@ public class GenreDBSIntegrationTest {
     final GenreStorage genreStorage;
 
     @Test
-    void findById() {
+    void testFindById() {
         final long id = 4L;
 
         final Optional<Genre> genreOptional = genreStorage.findById(id);
@@ -35,7 +35,7 @@ public class GenreDBSIntegrationTest {
     }
 
     @Test
-    void findAll() {
+    void testFindAll() {
 
         final List<Genre> genreList = genreStorage.findAll();
 

@@ -21,7 +21,7 @@ public class MpaDBSIntegrationTest {
 
     final MpaStorage mpaStorage;
     @Test
-    void findById() {
+    void testFindById() {
 
         final long id = 5L;
 
@@ -34,7 +34,7 @@ public class MpaDBSIntegrationTest {
                                 .hasFieldOrPropertyWithValue("name", "NC-17"));
     }
     @Test
-    void findAll() {
+    void testFindAll() {
 
         final List<Mpa> mpaList = mpaStorage.findAll();
 
