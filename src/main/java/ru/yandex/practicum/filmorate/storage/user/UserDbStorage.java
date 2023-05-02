@@ -29,11 +29,11 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> allUsers() {
 
-        String selectSql = "SELECT * FROM USERS";
+        String sql = "SELECT * FROM USERS";
 
         try {
             log.info("Список пользователей");
-            return jdbcTemplate.query(selectSql, USER_MAPPER);
+            return jdbcTemplate.query(sql, USER_MAPPER);
         } catch (RuntimeException e) {
             return Collections.emptyList();
         }
@@ -61,18 +61,18 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void put(User user) {
 
-        String selectSql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? WHERE USER_ID = ?";
+        String sql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? WHERE USER_ID = ?";
 
-        jdbcTemplate.update(selectSql, user.getEmail(), user.getName(), user.getLogin(),
+        jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getLogin(),
                 java.sql.Date.valueOf(user.getBirthday()), user.getId());
     }
 
     @Override
     public void del(User user) {
 
-        String selectSql = "UPDATE USERS SET EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? WHERE USER_ID = ?";
+        String sql = "DELETE FROM USERS WHERE USER_ID = ?";
 
-        jdbcTemplate.update(selectSql, user.getId());
+        jdbcTemplate.update(sql, user.getId());
 
     }
 
@@ -94,24 +94,6 @@ public class UserDbStorage implements UserStorage {
             return Optional.empty();
         }
 
-//        // выполняем запрос к базе данных.
-//        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM USERS WHERE USER_ID = ?", userId);
-//
-//        // обрабатываем результат выполнения запроса
-//        if(userRows.next()) {
-//            User user = new User(
-//                    userId,
-//                    userRows.getString("email"),
-//                    userRows.getString("name"),
-//                    userRows.getString("login"),
-//                    userRows.getDate("birthday").toLocalDate());
-//
-//            log.info("Найден пользователь: {} {}" , user.getId(), user.getName());
-//            return Optional.of(user);
-//        } else {
-//            log.info("Пользователь с идентификатором {} не найден.", userId);
-//            return Optional.empty();
-//        }
     }
 
     public boolean existsById(Long userId) {

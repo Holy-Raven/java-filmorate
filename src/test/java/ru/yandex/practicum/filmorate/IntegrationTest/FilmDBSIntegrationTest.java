@@ -16,12 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@SpringBootTest
-@AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor__ = @Autowired)
+    @SpringBootTest
+    @AutoConfigureTestDatabase
+    @RequiredArgsConstructor(onConstructor__ = @Autowired)
 class FilmDBSIntegrationTest {
 
     final FilmDbStorage filmStorage;
@@ -123,7 +124,7 @@ class FilmDBSIntegrationTest {
 
         final Optional<Film> filmOptional = filmStorage.findFilmById(id);
 
-        assertThat(filmOptional.isPresent()).isFalse();
+        assertFalse(filmOptional.isPresent());
 
     }
 

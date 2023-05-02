@@ -59,6 +59,8 @@ public class UserService implements UserServiceInterface {
         }
 
         log.info("User added : {}", user.getLogin());
+
+
         return userStorage.add(user);
     }
 
