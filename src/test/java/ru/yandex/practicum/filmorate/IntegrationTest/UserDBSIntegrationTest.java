@@ -52,7 +52,6 @@ public class UserDBSIntegrationTest {
         assertThat(dbUser_1.getLogin()).isEqualTo(user_1.getLogin());
         assertThat(dbUser_1.getBirthday()).isEqualTo(user_1.getBirthday());
     }
-
     @Test
     void testPutUser() {
 
@@ -80,7 +79,6 @@ public class UserDBSIntegrationTest {
                                 .hasFieldOrPropertyWithValue("birthday", user_2.getBirthday())
                 );
     }
-
     @Test
     void testFindUserById() {
 
@@ -97,9 +95,7 @@ public class UserDBSIntegrationTest {
                                 .hasFieldOrPropertyWithValue("login", user_1.getLogin())
                                 .hasFieldOrPropertyWithValue("birthday", user_1.getBirthday())
                 );
-
     }
-
     @Test
     void testFindAll() {
 
@@ -112,9 +108,7 @@ public class UserDBSIntegrationTest {
         assertThat(allUsers.size()).isEqualTo(2);
         assertTrue(allUsers.contains(dbUser_1));
         assertTrue(allUsers.contains(dbUser_2));
-
     }
-
     @Test
     void testDelUser() {
 
@@ -127,8 +121,5 @@ public class UserDBSIntegrationTest {
         final Optional<User> userOptional = userStorage.findUserById(id);
 
         assertFalse(userOptional.isPresent());
-
     }
-
-
 }

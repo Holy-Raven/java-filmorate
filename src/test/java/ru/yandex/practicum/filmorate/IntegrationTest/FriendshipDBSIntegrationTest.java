@@ -71,7 +71,6 @@ public class FriendshipDBSIntegrationTest {
         assertTrue(friendsListUser_1.contains(userDB_3.getId()));
         assertTrue(friendsListUser_2.isEmpty());
         assertTrue(friendsListUser_3.isEmpty());
-
     }
     @Test
     void testPutAndCheckStatusFriends() {
@@ -93,8 +92,6 @@ public class FriendshipDBSIntegrationTest {
         assertTrue(friendshipStorage.status(friendship_1_2));
         assertTrue(friendshipStorage.status(friendship_2_1));
         assertFalse(friendshipStorage.status(friendship_1_3));
-
-
     }
     @Test
     void testFindFriendshipById() {
