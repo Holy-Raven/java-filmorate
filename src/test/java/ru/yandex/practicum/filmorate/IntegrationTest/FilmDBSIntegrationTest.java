@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
     @RequiredArgsConstructor(onConstructor__ = @Autowired)
 class FilmDBSIntegrationTest {
 
-    final FilmDbStorage filmStorage;
+    final FilmStorage filmStorage;
     static Film film_1;
     static Film film_2;
 
@@ -34,14 +34,12 @@ class FilmDBSIntegrationTest {
         film_1 = new Film(null, "name_film_1", "description_film_1", (LocalDate.of(1995, 5, 5)), 100, new Mpa(1L));
         film_2 = new Film(null, "name_film_2", "description_film_2", (LocalDate.of(2000, 3, 2)), 90, new Mpa(2L));
     }
-
     @AfterEach
     void afterEach() {
         for (Film film : filmStorage.allFilms()) {
             filmStorage.del(film);
         }
     }
-
     @Test
     void testAddFilm() {
 

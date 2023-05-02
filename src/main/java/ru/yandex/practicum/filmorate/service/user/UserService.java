@@ -153,7 +153,7 @@ public class UserService implements UserServiceInterface {
 
         if (friendshipStorage.isExist(friendship)) {
             log.info("User №" + user1Id + "and User №" + user2Id + " not friends anymore");
-            friendshipStorage.delById(friendship);
+            friendshipStorage.del(friendship);
 
         } else {
             log.error("User №" + user2Id + " and User №" + user1Id + " not friends");

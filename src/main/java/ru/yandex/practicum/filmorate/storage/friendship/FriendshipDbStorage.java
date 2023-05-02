@@ -59,7 +59,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public Optional<Friendship> findById(Friendship friendship) {
+    public Optional<Friendship> findFriendship(Friendship friendship) {
 
         String sql = "SELECT * FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR SECOND_USER_ID = ? AND FIRST_USER_ID = ?";
@@ -79,7 +79,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public void delById(Friendship friendship) {
+    public void del(Friendship friendship) {
         String sql = "DELETE FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 
@@ -117,7 +117,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
     @Override
     public boolean isExist(Friendship friendship) {
-        return findById(friendship).isPresent();
+        return findFriendship(friendship).isPresent();
     }
 
 }

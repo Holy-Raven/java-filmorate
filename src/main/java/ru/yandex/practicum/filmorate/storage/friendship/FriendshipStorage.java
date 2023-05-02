@@ -10,12 +10,8 @@ public interface FriendshipStorage {
     List<Long> findAllById(long id);
     void add(Friendship friendship);
     void put(Friendship friendship);
-
-    Optional<Friendship> findById(Friendship friendship);
-
-    void delById(Friendship friendship);
-
+    Optional<Friendship> findFriendship(Friendship friendship);
+    void del(Friendship friendship);
     boolean status(Friendship friendship);
-
     boolean isExist(Friendship friendship);
 }
