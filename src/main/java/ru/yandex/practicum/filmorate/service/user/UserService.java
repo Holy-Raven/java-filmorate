@@ -126,7 +126,7 @@ public class UserService implements UserServiceInterface {
 
         if (friendshipStorage.isExist(friendship)) {
 
-            if (friendshipStorage.status(friendship)){
+            if (friendshipStorage.status(friendship)) {
                 throw new BusinessLogicException("User №" + user2Id + " and User №" + user1Id + " already friends");
 
             } else {
