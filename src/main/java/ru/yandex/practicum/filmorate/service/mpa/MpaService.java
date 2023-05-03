@@ -29,11 +29,11 @@ public class MpaService implements MpaServiceInterface {
     @Override
     public Mpa findById(long id) {
 
-        if (mpaStorage.findById(id).isPresent()){
+        if (mpaStorage.findById(id).isPresent()) {
 
             Mpa mpa = mpaStorage.findById(id).get();
 
-            log.info("Mpa id {}, name {}" , mpa.getId(), mpa.getName());
+            log.info("Mpa id {}, name {}", mpa.getId(), mpa.getName());
 
             return mpa;
         } else {
