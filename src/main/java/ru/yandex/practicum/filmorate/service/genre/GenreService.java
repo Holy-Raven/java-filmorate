@@ -10,9 +10,10 @@ import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @Slf4j
-public class GenreService implements GenreServiceInterface{
+public class GenreService implements GenreServiceInterface {
 
     private final GenreStorage genreStorage;
 
@@ -29,11 +30,11 @@ public class GenreService implements GenreServiceInterface{
     @Override
     public Genre findById(long id) {
 
-        if (genreStorage.findById(id).isPresent()){
+        if (genreStorage.findById(id).isPresent()) {
 
             Genre genre = genreStorage.findById(id).get();
 
-            log.info("Genre id {}, name {}" , genre.getId(), genre.getName());
+            log.info("Genre id {}, name {}", genre.getId(), genre.getName());
             return genre;
         } else {
             throw new GenreNotFoundException("Genre id " +  id + " not found");
