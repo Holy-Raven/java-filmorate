@@ -8,9 +8,14 @@ import java.util.Optional;
 public interface UserStorage {
 
     List<User> allUsers();
+
     User add(User user);
+
     void put(User user);
+
     void del(User user);
+
     Optional<User> findUserById(Long userId);
+
     boolean existsById(Long id);
 }
