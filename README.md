@@ -8,16 +8,15 @@ Template repository for Filmorate project.
 [Ссылка на диаграмму](src/main/resources/ER-filmorate.png)
 
 [Ссылка на диаграмму в редакторе диаграмм](https://dbdiagram.io/d/6436b0d58615191cfa8d5bbd)
-
 ## Описание ER диаграммы filmorate:
 
-Таблица film с внешним ключом film_id, по которому она связана с таблицей genre_list, так же содержащей поле genre_id.
-Имена жанров располагаются в таблице genre, genre_id является внешним ключом. И так же связана с таблицей mpas, в
-которой есть три колонки: mpa_id (внешний ключ), name_mpa и description (текстовое описание рейтинга).
+Таблица film с внешним ключом film_id, по которому она связана с таблицей films_genre, так же содержащей поле genre_id.
+Имена жанров располагаются в таблице genre, genre_id является внешним ключом. И так же связана с таблицей rating, в
+которой есть две колонки: rating_id (внешний ключ) и name.
 
-Таблица user с внешним ключом user_id. В Таблице likes имеются поля film_id и user_id, по которой мы можем определить
+Таблица users с внешним ключом user_id. В Таблице likes имеются поля film_id и user_id, по которой мы можем определить
 какие пользователи какому фильму ставили лайки. Чтобы определить, какой из пользователей какому является другом, есть
-таблица request_list содержит три поля: first_user_id (user отправляющий запрос на добавление в друзья), second_user_id
+таблица friendship, которая содержит три поля: first_user_id (user отправляющий запрос на добавление в друзья), second_user_id
 и состояние запроса принято/не принято.
 
 ## Примеры запросов
@@ -27,20 +26,20 @@ Template repository for Filmorate project.
 #### Получение всех фильмов
 
 ```
-SELECT title FROM film;
+SELECT * FROM film;
 ```
 
 #### Выдать фильм по id
 
 ```
-SELECT title FROM film
-WHERE film id = 'somenumber'
+SELECT name FROM films
+WHERE film_id = 'somenumber'
 ```
 
 #### Добавить фильм
 
 ```
-INSERT INTO film (film_id, name, description, releaseDate, duration, rating_id)
+INSERT INTO film (name, description, releaseDate, duration, rating_id)
 VALUES ('aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x); 
 ```
 
@@ -48,7 +47,7 @@ VALUES ('aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x);
 
 ```
 INSERT INTO film (name, description, releaseDate, duration, rating_id)
-VALUES (q, 'aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x); 
+VALUES (q, 'aaa', 'bbb', 'yyyy.mm.dd', 'ccc', x) WHERE film_id = q 
 ON CONFLICT (q) DO UPDATE SET name = EXCLUDED.name, 
                               description = EXCLUDED.description, 
                               releaseDate = EXCLUDED.releaseDate, 
@@ -66,7 +65,7 @@ VALUES ('somefilm_id', 'someuser_id');
 #### Пользователь удаляет лайк
 
 ```
-DELETE FROM likes WHERE film_id = somefilm_id, user_id=someuser_id;
+DELETE FROM likes WHERE film_id = somefilm_id AND user_id=someuser_id;
 ```
 
 #### Удалить фильм
@@ -83,14 +82,14 @@ FROM film AS f
 LEFT JOIN likes AS k ON f.film_ id = k.film_id
 GROUP BY f.title
 ORDER BY count DESС
-LIMIT(top_fillm);
+LIMIT(top_film);
 ```
 ### User
 
 #### Получение списка всех пользователей
 
 ```
-SELECT name FROM users;
+SELECT * FROM users;
 ```
 
 #### Добавление пользователя
@@ -103,8 +102,8 @@ VALUES ('aaa', 'bbb', 'ccc', 'yyyy.mm.dd');
 #### Обновление пользователя
 
 ```
-INSERT INTO user (user_id, email, name, login, birthday)
-VALUES (q, 'aaa', 'bbb', 'ccc', 'yyyy.mm.dd'); 
+INSERT INTO user (email, name, login, birthday)
+VALUES ('aaa', 'bbb', 'ccc', 'yyyy.mm.dd') WHERE user_id = q ; 
 ON CONFLICT (q) DO UPDATE SET email = EXCLUDED.email, 
                               name = EXCLUDED.name, 
                               login = EXCLUDED.login, 
