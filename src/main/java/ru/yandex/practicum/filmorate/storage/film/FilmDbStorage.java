@@ -30,7 +30,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List <Film> allFilms() {
+    public List<Film> allFilms() {
 
         String sql = "SELECT * FROM FILMS";
 
@@ -89,7 +89,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Optional <Film> findFilmById(Long filmId) {
+    public Optional<Film> findFilmById(Long filmId) {
 
         String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
 
