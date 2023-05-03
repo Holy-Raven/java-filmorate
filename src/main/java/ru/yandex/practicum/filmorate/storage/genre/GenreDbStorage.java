@@ -1,13 +1,10 @@
 package ru.yandex.practicum.filmorate.storage.genre;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +12,6 @@ import java.util.Optional;
 import static ru.yandex.practicum.filmorate.util.Constant.GENRE_MAPPER;
 @Repository("GenreStorage")
 public class GenreDbStorage implements GenreStorage {
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -29,14 +25,10 @@ public class GenreDbStorage implements GenreStorage {
         String sql = "SELECT * FROM GENRE WHERE GENRE_ID = ?";
 
         try {
-
             return Optional.of(jdbcTemplate.queryForObject(sql, GENRE_MAPPER, id));
-
         } catch (EmptyResultDataAccessException exception) {
-
             throw new GenreNotFoundException("Genre с id " +  id + " не найден");
         }
-
     }
 
     @Override

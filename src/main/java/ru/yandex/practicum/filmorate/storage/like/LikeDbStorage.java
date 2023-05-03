@@ -1,20 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.like;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import java.util.List;
 
 import static ru.yandex.practicum.filmorate.util.Constant.LIKE_MAPPER;
 
-
 @Repository("LikeStorage")
 public class LikeDbStorage implements LikeStorage {
 
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     public LikeDbStorage(JdbcTemplate jdbcTemplate) {

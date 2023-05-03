@@ -34,13 +34,13 @@ public class MpaDbStorage implements MpaStorage {
 
             Mpa mpa = jdbcTemplate.queryForObject(sql, MPA_MAPPER, id);
 
-            log.info("Найден mpa: {} {}" , mpa.getId(), mpa.getName());
+            log.info("Find mpa {} name {}", mpa.getId(), mpa.getName());
             return Optional.of(mpa);
 
         } catch (EmptyResultDataAccessException exception) {
 
-            log.info("mpa с идентификатором {} не найден.", id);
-            throw new MpaNotFoundException("Mpa с id " +  id + " не найден");
+            log.info("mpa {} not found.", id);
+            throw new MpaNotFoundException("Mpa " +  id + " not found");
         }
     }
 

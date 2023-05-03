@@ -19,6 +19,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
     private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
+
     public FriendshipDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
 
@@ -34,6 +35,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         return friendList;
     }
+
     @Override
     public void add(Friendship friendship) {
 
@@ -67,7 +69,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         } catch (EmptyResultDataAccessException exception) {
 
-            log.info("User id{} and User id {} nor friends" , friendship.getFirstUserId(), friendship.getSecondUserId());
+            log.info("User id{} and User id {} nor friends", friendship.getFirstUserId(), friendship.getSecondUserId());
             return Optional.empty();
         }
     }
