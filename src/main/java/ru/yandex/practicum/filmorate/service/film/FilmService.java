@@ -17,8 +17,6 @@ import ru.yandex.practicum.filmorate.util.Constant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.yandex.practicum.filmorate.util.Constant.FILM_MAPPER;
-
 @Service
 @Slf4j
 public class FilmService implements FilmServiceInterface {
@@ -166,14 +164,14 @@ public class FilmService implements FilmServiceInterface {
     }
 
     @Override
-    public Film addLikeFilm(String film_id, String user_id) {
+    public Film addLikeFilm(String strFilmId, String strUserId) {
 
-        long filmId = parseStringInLong(film_id);
-        long userId = parseStringInLong(user_id);
+        long filmId = parseStringInLong(strFilmId);
+        long userId = parseStringInLong(strUserId);
 
         Film film = filmStorage.findFilmById(filmId).get();
 
-        if (likeStorage.isExist(filmId, userId)){
+        if (likeStorage.isExist(filmId, userId)) {
 
             log.error("The user has already liked this movie");
             throw new BusinessLogicException("The user has already liked this movie");
@@ -195,21 +193,21 @@ public class FilmService implements FilmServiceInterface {
     }
 
     @Override
-    public Film delLikeFilm(String film_id, String user_id) {
+    public Film delLikeFilm(String strFilmId, String strUserId) {
 
 
-        long filmId = parseStringInLong(film_id);
-        long userId = parseStringInLong(user_id);
+        long filmId = parseStringInLong(strFilmId);
+        long userId = parseStringInLong(strUserId);
 
         Film film = filmStorage.findFilmById(filmId).get();
 
-        if (!likeStorage.isExist(filmId, userId)){
+        if (!likeStorage.isExist(filmId, userId)) {
 
             log.error("The user did not like this movie");
             throw new BusinessLogicException("The user did not like this movie");
 
         } else {
-            log.info("User id {} deleted a like from Film id {}" , user_id, film_id);
+            log.info("User id {} deleted a like from Film id {}", userId, filmId);
             likeStorage.delLikeFilm(filmId, userId);
         }
 
