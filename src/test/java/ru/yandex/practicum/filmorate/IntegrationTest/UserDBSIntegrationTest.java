@@ -30,10 +30,8 @@ public class UserDBSIntegrationTest {
 
     @BeforeEach
     void beforeEach() {
-
         user1 = new User(null, "email@user_1", "name_user_1", "login_user_1", (LocalDate.of(1995, 5, 5)));
         user2 = new User(null, "email@user_2", "name_user_2", "login_user_2", (LocalDate.of(2000, 3, 2)));
-
     }
 
     @AfterEach
