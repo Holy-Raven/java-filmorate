@@ -108,8 +108,8 @@ public class FriendshipDBSIntegrationTest {
         assertThat(optionalFriendship)
                 .hasValueSatisfying(friendShip ->
                         assertThat(friendShip)
-                                .hasFieldOrPropertyWithValue("first_user_id", userDB_1.getId())
-                                .hasFieldOrPropertyWithValue("second_user_id", userDB_2.getId()));
+                                .hasFieldOrPropertyWithValue("firstUserId", userDB_1.getId())
+                                .hasFieldOrPropertyWithValue("secondUserId", userDB_2.getId()));
     }
     @Test
     void testDelFriendsList() {

@@ -39,7 +39,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         String sql = "INSERT INTO FRiENDSHIP (FIRST_USER_ID,  SECOND_USER_ID) VALUES (?, ?)";
 
-        jdbcTemplate.update(sql, friendship.getFirst_user_id(), friendship.getSecond_user_id());
+        jdbcTemplate.update(sql, friendship.getFirstUserId(), friendship.getSecondUserId());
 
     }
 
@@ -48,8 +48,8 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         String sql = "UPDATE FRiENDSHIP SET STATUS = ? WHERE FIRST_USER_ID = ? and SECOND_USER_ID = ? OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 
-        jdbcTemplate.update(sql, true, friendship.getFirst_user_id(), friendship.getSecond_user_id(),
-                friendship.getSecond_user_id(), friendship.getFirst_user_id());
+        jdbcTemplate.update(sql, true, friendship.getFirstUserId(), friendship.getSecondUserId(),
+                friendship.getSecondUserId(), friendship.getFirstUserId());
 
     }
 
@@ -60,14 +60,14 @@ public class FriendshipDbStorage implements FriendshipStorage {
                      "OR SECOND_USER_ID = ? AND FIRST_USER_ID = ?";
         try {
 
-            friendship = jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirst_user_id(),
-                     friendship.getSecond_user_id(), friendship.getSecond_user_id(), friendship.getFirst_user_id());
+            friendship = jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirstUserId(),
+                     friendship.getSecondUserId(), friendship.getSecondUserId(), friendship.getFirstUserId());
 
             return Optional.of(friendship);
 
         } catch (EmptyResultDataAccessException exception) {
 
-            log.info("User id{} and User id {} nor friends" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
+            log.info("User id{} and User id {} nor friends" , friendship.getFirstUserId(), friendship.getSecondUserId());
             return Optional.empty();
         }
     }
@@ -77,8 +77,8 @@ public class FriendshipDbStorage implements FriendshipStorage {
         String sql = "DELETE FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 
-        jdbcTemplate.update(sql, friendship.getFirst_user_id(),
-                friendship.getSecond_user_id(), friendship.getSecond_user_id(), friendship.getFirst_user_id());
+        jdbcTemplate.update(sql, friendship.getFirstUserId(),
+                friendship.getSecondUserId(), friendship.getSecondUserId(), friendship.getFirstUserId());
     }
 
     @Override
@@ -87,8 +87,8 @@ public class FriendshipDbStorage implements FriendshipStorage {
         String sql = "SELECT STATUS FROM FRIENDSHIP WHERE FIRST_USER_ID = ? AND SECOND_USER_ID = ? " +
                      "OR FIRST_USER_ID = ? AND SECOND_USER_ID = ?";
 
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, friendship.getFirst_user_id(), friendship.getSecond_user_id(),
-                friendship.getSecond_user_id(), friendship.getFirst_user_id());
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, friendship.getFirstUserId(), friendship.getSecondUserId(),
+                friendship.getSecondUserId(), friendship.getFirstUserId());
 
         if (userRows.next()) {
             return userRows.getBoolean("status");
