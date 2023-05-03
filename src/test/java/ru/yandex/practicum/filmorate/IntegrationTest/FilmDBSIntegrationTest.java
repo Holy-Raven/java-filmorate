@@ -137,7 +137,7 @@ class FilmDBSIntegrationTest {
     }
 
     @Test
-    void testGenreFilm(){
+    void testGenreFilm() {
 
         final Film dbFilm1 = filmStorage.add(film1);
 

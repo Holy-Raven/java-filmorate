@@ -35,6 +35,7 @@ public class UserDBSIntegrationTest {
         user2 = new User(null, "email@user_2", "name_user_2", "login_user_2", (LocalDate.of(2000, 3, 2)));
 
     }
+
     @AfterEach
     void afterEach() {
         for (User user : userStorage.allUsers()) {

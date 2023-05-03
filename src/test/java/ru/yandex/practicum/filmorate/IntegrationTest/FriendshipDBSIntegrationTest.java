@@ -43,6 +43,7 @@ public class FriendshipDBSIntegrationTest {
         user3 = new User(null, "email@user_3", "name_user_3", "login_user_3", (LocalDate.of(2005, 8, 4)));
 
     }
+    
     @AfterEach
     void afterEach() {
         for (User user : userStorage.allUsers()) {
@@ -113,6 +114,7 @@ public class FriendshipDBSIntegrationTest {
                                 .hasFieldOrPropertyWithValue("firstUserId", userDB1.getId())
                                 .hasFieldOrPropertyWithValue("secondUserId", userDB2.getId()));
     }
+
     @Test
     void testDelFriendsList() {
 
