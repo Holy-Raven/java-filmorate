@@ -30,14 +30,15 @@ class FilmDBSIntegrationTest {
     final FilmStorage filmStorage;
 
     final GenreStorage genreStorage;
-    static Film film_1;
-    static Film film_2;
+    static Film film1;
+    static Film film2;
 
     @BeforeEach
     void beforeEach() {
-        film_1 = new Film(null, "name_film_1", "description_film_1", (LocalDate.of(1995, 5, 5)), 100, new Mpa(1L));
-        film_2 = new Film(null, "name_film_2", "description_film_2", (LocalDate.of(2000, 3, 2)), 90, new Mpa(2L));
+        film1 = new Film(null, "name_film_1", "description_film_1", (LocalDate.of(1995, 5, 5)), 100, new Mpa(1L));
+        film2 = new Film(null, "name_film_2", "description_film_2", (LocalDate.of(2000, 3, 2)), 90, new Mpa(2L));
     }
+
     @AfterEach
     void afterEach() {
         for (Film film : filmStorage.allFilms()) {
@@ -48,30 +49,31 @@ class FilmDBSIntegrationTest {
     @Test
     void testAddFilm() {
 
-        final Film dbFilm_1 = filmStorage.add(film_1);
+        final Film dbFilm1 = filmStorage.add(film1);
 
-        assertThat(dbFilm_1.getId()).isNotNull();
-        assertThat(dbFilm_1.getName()).isEqualTo(film_1.getName());
-        assertThat(dbFilm_1.getDescription()).isEqualTo(film_1.getDescription());
-        assertThat(dbFilm_1.getReleaseDate()).isEqualTo(film_1.getReleaseDate());
-        assertThat(dbFilm_1.getDuration()).isEqualTo(film_1.getDuration());
-        assertThat(dbFilm_1.getMpa()).isEqualTo(film_1.getMpa());
+        assertThat(dbFilm1.getId()).isNotNull();
+        assertThat(dbFilm1.getName()).isEqualTo(film1.getName());
+        assertThat(dbFilm1.getDescription()).isEqualTo(film1.getDescription());
+        assertThat(dbFilm1.getReleaseDate()).isEqualTo(film1.getReleaseDate());
+        assertThat(dbFilm1.getDuration()).isEqualTo(film1.getDuration());
+        assertThat(dbFilm1.getMpa()).isEqualTo(film1.getMpa());
     }
+
     @Test
     void testPutFilm() {
 
-        final Film dbFilm_1 = filmStorage.add(film_1);
+        final Film dbFilm1 = filmStorage.add(film1);
 
-        final long id = dbFilm_1.getId();
+        final long id = dbFilm1.getId();
 
-        Film testFilm_2 = new Film(id,
-                film_2.getName(),
-                film_2.getDescription(),
-                film_2.getReleaseDate(),
-                film_2.getDuration(),
-                film_2.getMpa());
+        Film testFilm2 = new Film(id,
+                film2.getName(),
+                film2.getDescription(),
+                film2.getReleaseDate(),
+                film2.getDuration(),
+                film2.getMpa());
 
-        filmStorage.put(testFilm_2);
+        filmStorage.put(testFilm2);
 
         final Optional<Film> filmOptional = filmStorage.findFilmById(id);
 
@@ -79,17 +81,18 @@ class FilmDBSIntegrationTest {
                 .isPresent()
                 .hasValueSatisfying(film ->
                         assertThat(film).hasFieldOrPropertyWithValue("id", id)
-                                .hasFieldOrPropertyWithValue("name", film_2.getName())
-                                .hasFieldOrPropertyWithValue("description", film_2.getDescription())
-                                .hasFieldOrPropertyWithValue("releaseDate", film_2.getReleaseDate())
-                                .hasFieldOrPropertyWithValue("duration", film_2.getDuration())
-                                .hasFieldOrPropertyWithValue("mpa", film_2.getMpa())
+                                .hasFieldOrPropertyWithValue("name", film2.getName())
+                                .hasFieldOrPropertyWithValue("description", film2.getDescription())
+                                .hasFieldOrPropertyWithValue("releaseDate", film2.getReleaseDate())
+                                .hasFieldOrPropertyWithValue("duration", film2.getDuration())
+                                .hasFieldOrPropertyWithValue("mpa", film2.getMpa())
                 );
     }
+
     @Test
     void testFindFilmById() {
 
-        final long id = filmStorage.add(film_1).getId();
+        final long id = filmStorage.add(film1).getId();
 
         final Optional<Film> filmOptional = filmStorage.findFilmById(id);
 
@@ -97,62 +100,64 @@ class FilmDBSIntegrationTest {
                 .isPresent()
                 .hasValueSatisfying(film ->
                         assertThat(film).hasFieldOrPropertyWithValue("id", id)
-                                        .hasFieldOrPropertyWithValue("name", film_1.getName())
-                                        .hasFieldOrPropertyWithValue("description", film_1.getDescription())
-                                        .hasFieldOrPropertyWithValue("releaseDate", film_1.getReleaseDate())
-                                        .hasFieldOrPropertyWithValue("duration", film_1.getDuration())
-                                        .hasFieldOrPropertyWithValue("mpa", film_1.getMpa())
+                                        .hasFieldOrPropertyWithValue("name", film1.getName())
+                                        .hasFieldOrPropertyWithValue("description", film1.getDescription())
+                                        .hasFieldOrPropertyWithValue("releaseDate", film1.getReleaseDate())
+                                        .hasFieldOrPropertyWithValue("duration", film1.getDuration())
+                                        .hasFieldOrPropertyWithValue("mpa", film1.getMpa())
                 );
     }
+
     @Test
     void testFindAll() {
-        final Film dbFilm_1 = filmStorage.add(film_1);
-        final Film dbFilm_2 = filmStorage.add(film_2);
+        final Film dbFilm1 = filmStorage.add(film1);
+        final Film dbFilm2 = filmStorage.add(film2);
 
         final List<Film> allFilms = filmStorage.allFilms();
 
         assertThat(allFilms).isNotNull();
         assertThat(allFilms.size()).isEqualTo(2);
-        assertTrue(allFilms.contains(dbFilm_1));
-        assertTrue(allFilms.contains(dbFilm_2));
+        assertTrue(allFilms.contains(dbFilm1));
+        assertTrue(allFilms.contains(dbFilm2));
     }
+
     @Test
     void testDelFilm() {
 
-        final Film dbFilm_1 = filmStorage.add(film_1);
+        final Film dbFilm1 = filmStorage.add(film1);
 
-        final long id = dbFilm_1.getId();
+        final long id = dbFilm1.getId();
 
-        filmStorage.del(dbFilm_1);
+        filmStorage.del(dbFilm1);
 
         final Optional<Film> filmOptional = filmStorage.findFilmById(id);
 
         assertFalse(filmOptional.isPresent());
 
     }
+
     @Test
     void testGenreFilm(){
 
-        final Film dbFilm_1 = filmStorage.add(film_1);
+        final Film dbFilm1 = filmStorage.add(film1);
 
-        final Genre genre_1 = genreStorage.findById(1L).get();
-        final Genre genre_2 = genreStorage.findById(1L).get();
+        final Genre genre1 = genreStorage.findById(1L).get();
+        final Genre genre2 = genreStorage.findById(1L).get();
 
-        filmStorage.addGenreToFilm(dbFilm_1.getId(), genre_1.getId());
-        filmStorage.addGenreToFilm(dbFilm_1.getId(), genre_2.getId());
+        filmStorage.addGenreToFilm(dbFilm1.getId(), genre1.getId());
+        filmStorage.addGenreToFilm(dbFilm1.getId(), genre2.getId());
 
-        List<Genre> genreList = filmStorage.findGenreListFilmById(dbFilm_1.getId());
+        List<Genre> genreList = filmStorage.findGenreListFilmById(dbFilm1.getId());
 
         assertThat(genreList.size()).isEqualTo(2);
-        assertThat(genreList.get(0)).isEqualTo(genre_1);
-        assertThat(genreList.get(1)).isEqualTo(genre_2);
+        assertThat(genreList.get(0)).isEqualTo(genre1);
+        assertThat(genreList.get(1)).isEqualTo(genre2);
 
-        filmStorage.delGenresListFromFilm(dbFilm_1.getId());
+        filmStorage.delGenresListFromFilm(dbFilm1.getId());
 
-        genreList = filmStorage.findGenreListFilmById(dbFilm_1.getId());
+        genreList = filmStorage.findGenreListFilmById(dbFilm1.getId());
 
         assertTrue(genreList.isEmpty());
-
 
     }
 }

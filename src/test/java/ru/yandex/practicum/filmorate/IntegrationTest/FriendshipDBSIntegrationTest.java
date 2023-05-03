@@ -28,19 +28,19 @@ public class FriendshipDBSIntegrationTest {
     final UserStorage userStorage;
     final FriendshipStorage friendshipStorage;
 
-    static User user_1;
-    static User user_2;
-    static User user_3;
-    static User userDB_1;
-    static User userDB_2;
-    static User userDB_3;
+    static User user1;
+    static User user2;
+    static User user3;
+    static User userDB1;
+    static User userDB2;
+    static User userDB3;
 
     @BeforeEach
     void beforeEach() {
 
-        user_1 = new User(null, "email@user_1", "name_user_1", "login_user_1", (LocalDate.of(1995, 5, 5)));
-        user_2 = new User(null, "email@user_2", "name_user_2", "login_user_2", (LocalDate.of(2000, 3, 2)));
-        user_3 = new User(null, "email@user_3", "name_user_3", "login_user_3", (LocalDate.of(2005, 8, 4)));
+        user1 = new User(null, "email@user_1", "name_user_1", "login_user_1", (LocalDate.of(1995, 5, 5)));
+        user2 = new User(null, "email@user_2", "name_user_2", "login_user_2", (LocalDate.of(2000, 3, 2)));
+        user3 = new User(null, "email@user_3", "name_user_3", "login_user_3", (LocalDate.of(2005, 8, 4)));
 
     }
     @AfterEach
@@ -53,53 +53,55 @@ public class FriendshipDBSIntegrationTest {
     @Test
     void testAddAndFindFriends() {
 
-        userDB_1 = userStorage.add(user_1);
-        userDB_2 = userStorage.add(user_2);
-        userDB_3 = userStorage.add(user_3);
+        userDB1 = userStorage.add(user1);
+        userDB2 = userStorage.add(user2);
+        userDB3 = userStorage.add(user3);
 
-        final Friendship friendship_1_2 = new Friendship(userDB_1.getId(), userDB_2.getId());
-        final Friendship friendship_1_3 = new Friendship(userDB_1.getId(), userDB_3.getId());
+        final Friendship friendship12 = new Friendship(userDB1.getId(), userDB2.getId());
+        final Friendship friendship13 = new Friendship(userDB1.getId(), userDB3.getId());
 
-        friendshipStorage.add(friendship_1_2);
-        friendshipStorage.add(friendship_1_3);
+        friendshipStorage.add(friendship12);
+        friendshipStorage.add(friendship13);
 
-        final List<Long> friendsListUser_1 = friendshipStorage.findAllById(userDB_1.getId());
-        final List<Long> friendsListUser_2 = friendshipStorage.findAllById(userDB_2.getId());
-        final List<Long> friendsListUser_3 = friendshipStorage.findAllById(userDB_3.getId());
+        final List<Long> friendsListUser1 = friendshipStorage.findAllById(userDB1.getId());
+        final List<Long> friendsListUser2 = friendshipStorage.findAllById(userDB2.getId());
+        final List<Long> friendsListUser3 = friendshipStorage.findAllById(userDB3.getId());
 
-        assertTrue(friendsListUser_1.contains(userDB_2.getId()));
-        assertTrue(friendsListUser_1.contains(userDB_3.getId()));
-        assertTrue(friendsListUser_2.isEmpty());
-        assertTrue(friendsListUser_3.isEmpty());
+        assertTrue(friendsListUser1.contains(userDB2.getId()));
+        assertTrue(friendsListUser1.contains(userDB3.getId()));
+        assertTrue(friendsListUser2.isEmpty());
+        assertTrue(friendsListUser3.isEmpty());
     }
+
     @Test
     void testPutAndCheckStatusFriends() {
 
-        userDB_1 = userStorage.add(user_1);
-        userDB_2 = userStorage.add(user_2);
-        userDB_3 = userStorage.add(user_3);
+        userDB1 = userStorage.add(user1);
+        userDB2 = userStorage.add(user2);
+        userDB3 = userStorage.add(user3);
 
-        final Friendship friendship_1_2 = new Friendship(userDB_1.getId(), userDB_2.getId());
-        final Friendship friendship_2_1 = new Friendship(userDB_2.getId(), userDB_1.getId());
-        final Friendship friendship_1_3 = new Friendship(userDB_1.getId(), userDB_3.getId());
+        final Friendship friendship12 = new Friendship(userDB1.getId(), userDB2.getId());
+        final Friendship friendship21 = new Friendship(userDB2.getId(), userDB1.getId());
+        final Friendship friendship13 = new Friendship(userDB1.getId(), userDB3.getId());
 
-        friendshipStorage.add(friendship_1_2);
-        friendshipStorage.add(friendship_2_1);
-        friendshipStorage.add(friendship_1_3);
+        friendshipStorage.add(friendship12);
+        friendshipStorage.add(friendship21);
+        friendshipStorage.add(friendship13);
 
-        friendshipStorage.put(friendship_1_2);
+        friendshipStorage.put(friendship12);
 
-        assertTrue(friendshipStorage.status(friendship_1_2));
-        assertTrue(friendshipStorage.status(friendship_2_1));
-        assertFalse(friendshipStorage.status(friendship_1_3));
+        assertTrue(friendshipStorage.status(friendship12));
+        assertTrue(friendshipStorage.status(friendship21));
+        assertFalse(friendshipStorage.status(friendship13));
     }
+
     @Test
     void testFindFriendshipById() {
 
-        userDB_1 = userStorage.add(user_1);
-        userDB_2 = userStorage.add(user_2);
+        userDB1 = userStorage.add(user1);
+        userDB2 = userStorage.add(user2);
 
-        final Friendship friendship = new Friendship(userDB_1.getId(), userDB_2.getId());
+        final Friendship friendship = new Friendship(userDB1.getId(), userDB2.getId());
 
         friendshipStorage.add(friendship);
 
@@ -108,16 +110,16 @@ public class FriendshipDBSIntegrationTest {
         assertThat(optionalFriendship)
                 .hasValueSatisfying(friendShip ->
                         assertThat(friendShip)
-                                .hasFieldOrPropertyWithValue("firstUserId", userDB_1.getId())
-                                .hasFieldOrPropertyWithValue("secondUserId", userDB_2.getId()));
+                                .hasFieldOrPropertyWithValue("firstUserId", userDB1.getId())
+                                .hasFieldOrPropertyWithValue("secondUserId", userDB2.getId()));
     }
     @Test
     void testDelFriendsList() {
 
-        userDB_1 = userStorage.add(user_1);
-        userDB_2 = userStorage.add(user_2);
+        userDB1 = userStorage.add(user1);
+        userDB2 = userStorage.add(user2);
 
-        final Friendship friendship = new Friendship(userDB_1.getId(), userDB_2.getId());
+        final Friendship friendship = new Friendship(userDB1.getId(), userDB2.getId());
 
         friendshipStorage.add(friendship);
 

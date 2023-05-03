@@ -25,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UserDBSIntegrationTest {
 
     final UserStorage userStorage;
-    static User user_1;
-    static User user_2;
+    static User user1;
+    static User user2;
 
     @BeforeEach
     void beforeEach() {
 
-        user_1 = new User(null, "email@user_1", "name_user_1", "login_user_1", (LocalDate.of(1995, 5, 5)));
-        user_2 = new User(null, "email@user_2", "name_user_2", "login_user_2", (LocalDate.of(2000, 3, 2)));
+        user1 = new User(null, "email@user_1", "name_user_1", "login_user_1", (LocalDate.of(1995, 5, 5)));
+        user2 = new User(null, "email@user_2", "name_user_2", "login_user_2", (LocalDate.of(2000, 3, 2)));
 
     }
     @AfterEach
@@ -45,28 +45,29 @@ public class UserDBSIntegrationTest {
     @Test
     void testAddUser() {
 
-        final User dbUser_1 = userStorage.add(user_1);
+        final User dbUser1 = userStorage.add(user1);
 
-        assertThat(dbUser_1.getId()).isNotNull();
-        assertThat(dbUser_1.getEmail()).isEqualTo(user_1.getEmail());
-        assertThat(dbUser_1.getName()).isEqualTo(user_1.getName());
-        assertThat(dbUser_1.getLogin()).isEqualTo(user_1.getLogin());
-        assertThat(dbUser_1.getBirthday()).isEqualTo(user_1.getBirthday());
+        assertThat(dbUser1.getId()).isNotNull();
+        assertThat(dbUser1.getEmail()).isEqualTo(user1.getEmail());
+        assertThat(dbUser1.getName()).isEqualTo(user1.getName());
+        assertThat(dbUser1.getLogin()).isEqualTo(user1.getLogin());
+        assertThat(dbUser1.getBirthday()).isEqualTo(user1.getBirthday());
     }
+
     @Test
     void testPutUser() {
 
-        final User dbUser_1 = userStorage.add(user_1);
+        final User dbUser1 = userStorage.add(user1);
 
-        final long id = dbUser_1.getId();
+        final long id = dbUser1.getId();
 
-        User testUser_2 = new User(id,
-                user_2.getEmail(),
-                user_2.getName(),
-                user_2.getLogin(),
-                user_2.getBirthday());
+        User testUser2 = new User(id,
+                user2.getEmail(),
+                user2.getName(),
+                user2.getLogin(),
+                user2.getBirthday());
 
-        userStorage.put(testUser_2);
+        userStorage.put(testUser2);
 
         final Optional<User> userOptional = userStorage.findUserById(id);
 
@@ -74,16 +75,17 @@ public class UserDBSIntegrationTest {
                 .isPresent()
                 .hasValueSatisfying(user ->
                         assertThat(user).hasFieldOrPropertyWithValue("id", id)
-                                .hasFieldOrPropertyWithValue("email", user_2.getEmail())
-                                .hasFieldOrPropertyWithValue("name", user_2.getName())
-                                .hasFieldOrPropertyWithValue("login", user_2.getLogin())
-                                .hasFieldOrPropertyWithValue("birthday", user_2.getBirthday())
+                                .hasFieldOrPropertyWithValue("email", user2.getEmail())
+                                .hasFieldOrPropertyWithValue("name", user2.getName())
+                                .hasFieldOrPropertyWithValue("login", user2.getLogin())
+                                .hasFieldOrPropertyWithValue("birthday", user2.getBirthday())
                 );
     }
+
     @Test
     void testFindUserById() {
 
-        final long id = userStorage.add(user_1).getId();
+        final long id = userStorage.add(user1).getId();
 
         final Optional<User> userOptional = userStorage.findUserById(id);
 
@@ -91,33 +93,35 @@ public class UserDBSIntegrationTest {
                 .isPresent()
                 .hasValueSatisfying(user ->
                         assertThat(user).hasFieldOrPropertyWithValue("id", id)
-                                .hasFieldOrPropertyWithValue("email", user_1.getEmail())
-                                .hasFieldOrPropertyWithValue("name", user_1.getName())
-                                .hasFieldOrPropertyWithValue("login", user_1.getLogin())
-                                .hasFieldOrPropertyWithValue("birthday", user_1.getBirthday())
+                                .hasFieldOrPropertyWithValue("email", user1.getEmail())
+                                .hasFieldOrPropertyWithValue("name", user1.getName())
+                                .hasFieldOrPropertyWithValue("login", user1.getLogin())
+                                .hasFieldOrPropertyWithValue("birthday", user1.getBirthday())
                 );
     }
+
     @Test
     void testFindAll() {
 
-        final User dbUser_1 = userStorage.add(user_1);
-        final User dbUser_2 = userStorage.add(user_2);
+        final User dbUser1 = userStorage.add(user1);
+        final User dbUser2 = userStorage.add(user2);
 
         final List<User> allUsers = userStorage.allUsers();
 
         assertThat(allUsers).isNotNull();
         assertThat(allUsers.size()).isEqualTo(2);
-        assertTrue(allUsers.contains(dbUser_1));
-        assertTrue(allUsers.contains(dbUser_2));
+        assertTrue(allUsers.contains(dbUser1));
+        assertTrue(allUsers.contains(dbUser2));
     }
+
     @Test
     void testDelUser() {
 
-        final User dbUser_1 = userStorage.add(user_1);
+        final User dbUser1 = userStorage.add(user1);
 
-        final long id = dbUser_1.getId();
+        final long id = dbUser1.getId();
 
-        userStorage.del(dbUser_1);
+        userStorage.del(dbUser1);
 
         final Optional<User> userOptional = userStorage.findUserById(id);
 

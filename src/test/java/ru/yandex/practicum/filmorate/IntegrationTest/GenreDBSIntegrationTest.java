@@ -41,19 +41,19 @@ public class GenreDBSIntegrationTest {
 
         assertThat(genreList.size()).isEqualTo(6);
 
-        Genre genre_id_1 = genreStorage.findById(1L).get();
-        Genre genre_id_2 = genreStorage.findById(2L).get();
-        Genre genre_id_3 = genreStorage.findById(3L).get();
-        Genre genre_id_4 = genreStorage.findById(4L).get();
-        Genre genre_id_5 = genreStorage.findById(5L).get();
-        Genre genre_id_6 = genreStorage.findById(6L).get();
+        Genre genreId1 = genreStorage.findById(1L).get();
+        Genre genreId2 = genreStorage.findById(2L).get();
+        Genre genreId3 = genreStorage.findById(3L).get();
+        Genre genreId4 = genreStorage.findById(4L).get();
+        Genre genreId5 = genreStorage.findById(5L).get();
+        Genre genreId6 = genreStorage.findById(6L).get();
 
-        assertThat(genreList.get(0)).isEqualTo(genre_id_1);
-        assertThat(genreList.get(1)).isEqualTo(genre_id_2);
-        assertThat(genreList.get(2)).isEqualTo(genre_id_3);
-        assertThat(genreList.get(3)).isEqualTo(genre_id_4);
-        assertThat(genreList.get(4)).isEqualTo(genre_id_5);
-        assertThat(genreList.get(5)).isEqualTo(genre_id_6);
+        assertThat(genreList.get(0)).isEqualTo(genreId1);
+        assertThat(genreList.get(1)).isEqualTo(genreId2);
+        assertThat(genreList.get(2)).isEqualTo(genreId3);
+        assertThat(genreList.get(3)).isEqualTo(genreId4);
+        assertThat(genreList.get(4)).isEqualTo(genreId5);
+        assertThat(genreList.get(5)).isEqualTo(genreId6);
 
     }
 
