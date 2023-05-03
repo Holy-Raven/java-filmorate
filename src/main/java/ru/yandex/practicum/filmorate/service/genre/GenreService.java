@@ -30,7 +30,11 @@ public class GenreService implements GenreServiceInterface{
     public Genre findById(long id) {
 
         if (genreStorage.findById(id).isPresent()){
-            return genreStorage.findById(id).get();
+
+            Genre genre = genreStorage.findById(id).get();
+
+            log.info("Genre id {}, name {}" , genre.getId(), genre.getName());
+            return genre;
         } else {
             throw new GenreNotFoundException("Genre id " +  id + " not found");
         }

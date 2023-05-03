@@ -30,7 +30,12 @@ public class MpaService implements MpaServiceInterface {
     public Mpa findById(long id) {
 
         if (mpaStorage.findById(id).isPresent()){
-            return mpaStorage.findById(id).get();
+
+            Mpa mpa = mpaStorage.findById(id).get();
+
+            log.info("Mpa id {}, name {}" , mpa.getId(), mpa.getName());
+
+            return mpa;
         } else {
             throw new MpaNotFoundException("Mpa id " +  id + " not found");
         }

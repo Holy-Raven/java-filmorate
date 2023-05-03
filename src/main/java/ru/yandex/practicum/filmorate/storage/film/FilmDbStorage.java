@@ -35,12 +35,7 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT * FROM FILMS";
 
         try {
-
-            log.info("Список пользователей");
             return jdbcTemplate.query(sql, FILM_MAPPER);
-
-
-
         } catch (RuntimeException e) {
             return Collections.emptyList();
         }
@@ -83,7 +78,6 @@ public class FilmDbStorage implements FilmStorage {
 
         this.jdbcTemplate.update(sql, film.getName(), film.getDescription(), java.sql.Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),film.getMpa().getId(), film.getId());
-
     }
 
     @Override
@@ -102,13 +96,10 @@ public class FilmDbStorage implements FilmStorage {
         try {
 
             Film film = jdbcTemplate.queryForObject(sql, FILM_MAPPER, filmId);
-
-            log.info("Найден фильм: {} {}" , film.getId(), film.getName());
             return Optional.of(film);
 
         } catch (EmptyResultDataAccessException exception) {
-
-            log.info("Фильм с идентификатором {} не найден.", filmId);
+            log.info("Film id{} not found.", filmId);
             return Optional.empty();
         }
     }
@@ -119,8 +110,6 @@ public class FilmDbStorage implements FilmStorage {
             String sqlInsert = "INSERT INTO FILMS_GENRE(FILM_ID, GENRE_ID) VALUES (?, ?)";
 
             jdbcTemplate.update(sqlInsert, film, genre);
-
-            log.info("Film id {} add Genre id {}" , film, genre);
     }
 
     @Override
@@ -129,8 +118,6 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "DELETE FROM FILMS_GENRE WHERE FILM_ID = ?";
 
         jdbcTemplate.update(sql, film);
-
-        log.info("Film id {} clear Genre List" , film);
 
     }
 
@@ -143,8 +130,6 @@ public class FilmDbStorage implements FilmStorage {
                      "ORDER BY g.GENRE_ID";
 
         List<Genre> genreList = jdbcTemplate.query(sql, GENRE_MAPPER, film);
-
-        log.info("Film id {} Genre List" , film);
 
         return genreList;
 

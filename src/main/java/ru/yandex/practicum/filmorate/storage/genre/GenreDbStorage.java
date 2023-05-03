@@ -30,14 +30,10 @@ public class GenreDbStorage implements GenreStorage {
 
         try {
 
-            Genre genre = jdbcTemplate.queryForObject(sql, GENRE_MAPPER, id);
-
-            log.info("Найден genre: {} {}" , genre.getId(), genre.getName());
-            return Optional.of(genre);
+            return Optional.of(jdbcTemplate.queryForObject(sql, GENRE_MAPPER, id));
 
         } catch (EmptyResultDataAccessException exception) {
 
-            log.info("genre с идентификатором {} не найден.", id);
             throw new GenreNotFoundException("Genre с id " +  id + " не найден");
         }
 

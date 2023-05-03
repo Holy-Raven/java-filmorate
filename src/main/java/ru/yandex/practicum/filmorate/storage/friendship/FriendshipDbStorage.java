@@ -31,7 +31,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
                      "UNION SELECT FIRST_USER_ID FROM FRIENDSHIP WHERE SECOND_USER_ID = ? AND STATUS = TRUE";
 
         List<Long> friendList = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("SECOND_USER_ID"), id, id);
-        log.info("Список друзей пользователя: {}" , id);
 
         return friendList;
     }
@@ -42,8 +41,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         jdbcTemplate.update(sql, friendship.getFirst_user_id(), friendship.getSecond_user_id());
 
-        log.info("Отправлен запрос на дружбу от пользователя {} к {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
-
     }
 
     @Override
@@ -53,8 +50,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         jdbcTemplate.update(sql, true, friendship.getFirst_user_id(), friendship.getSecond_user_id(),
                 friendship.getSecond_user_id(), friendship.getFirst_user_id());
-
-        log.info("Обновлен статус дружбы на подтвержденный у пользователей: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
 
     }
 
@@ -68,12 +63,11 @@ public class FriendshipDbStorage implements FriendshipStorage {
             friendship = jdbcTemplate.queryForObject(sql, FRIENDSHIP_MAPPER, friendship.getFirst_user_id(),
                      friendship.getSecond_user_id(), friendship.getSecond_user_id(), friendship.getFirst_user_id());
 
-            log.info("Запись найдена: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
             return Optional.of(friendship);
 
         } catch (EmptyResultDataAccessException exception) {
 
-            log.info("Запись не найдена: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
+            log.info("User id{} and User id {} nor friends" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
             return Optional.empty();
         }
     }
@@ -85,9 +79,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
         jdbcTemplate.update(sql, friendship.getFirst_user_id(),
                 friendship.getSecond_user_id(), friendship.getSecond_user_id(), friendship.getFirst_user_id());
-
-        log.info("Больше не друзья пользователи: {} {}" , friendship.getFirst_user_id(), friendship.getSecond_user_id());
-
     }
 
     @Override
@@ -100,17 +91,8 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 friendship.getSecond_user_id(), friendship.getFirst_user_id());
 
         if (userRows.next()) {
-
-            if (userRows.getBoolean("status")) {
-                log.info("Пользователи друзья: {} {}", friendship.getFirst_user_id(), friendship.getSecond_user_id());
-                return true;
-            } else {
-                log.info("Пользователи не друзья: {} {}", friendship.getFirst_user_id(), friendship.getSecond_user_id());
-                return false;
-            }
-
+            return userRows.getBoolean("status");
         } else {
-            log.info("Данные о дружбе пользователей {} и {} не найдены", friendship.getFirst_user_id(), friendship.getSecond_user_id());
             return false;
         }
     }

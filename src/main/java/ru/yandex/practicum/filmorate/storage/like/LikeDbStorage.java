@@ -28,8 +28,6 @@ public class LikeDbStorage implements LikeStorage {
 
         jdbcTemplate.update(sql, film, user);
 
-        log.info("User id {} liked Film id {}" , user, film);
-
     }
 
     @Override
@@ -39,8 +37,6 @@ public class LikeDbStorage implements LikeStorage {
 
         jdbcTemplate.update(sql, film, user);
 
-        log.info("User id {} deleted a like from Film id {}" , user, film);
-
     }
 
     @Override
@@ -48,11 +44,8 @@ public class LikeDbStorage implements LikeStorage {
 
         String sql = "SELECT USER_ID FROM LIKES WHERE FILM_ID =?";
 
-        List<Long> likes = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("user_id"), film);
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("user_id"), film);
 
-        log.info("List likes Film id {} " , film);
-
-        return likes;
     }
 
     @Override

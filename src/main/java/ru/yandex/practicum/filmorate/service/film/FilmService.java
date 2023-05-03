@@ -52,6 +52,7 @@ public class FilmService implements FilmServiceInterface {
             films.add(newFilm);
         }
 
+        log.info("All Films");
         return films;
     }
 
@@ -143,6 +144,8 @@ public class FilmService implements FilmServiceInterface {
             film.getGenres().addAll(filmStorage.findGenreListFilmById(id));
             film.getLikes().addAll(likeStorage.findLikesListFilmById(film.getId()));
 
+
+            log.info("Film id {}", film.getId());
             return Optional.of(film);
         } else {
             throw new FilmNotFoundException("There is no such film in our list of films");

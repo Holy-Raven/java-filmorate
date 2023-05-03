@@ -32,7 +32,6 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT * FROM USERS";
 
         try {
-            log.info("Список пользователей");
             return jdbcTemplate.query(sql, USER_MAPPER);
         } catch (RuntimeException e) {
             return Collections.emptyList();
@@ -85,12 +84,11 @@ public class UserDbStorage implements UserStorage {
 
             User user = jdbcTemplate.queryForObject(sql, USER_MAPPER, userId);
 
-            log.info("Найден пользователь: {} {}" , user.getId(), user.getName());
             return Optional.of(user);
 
         } catch (EmptyResultDataAccessException exception) {
 
-            log.info("Пользователь с идентификатором {} не найден.", userId);
+            log.info("User id {} not found.", userId);
             return Optional.empty();
         }
 
