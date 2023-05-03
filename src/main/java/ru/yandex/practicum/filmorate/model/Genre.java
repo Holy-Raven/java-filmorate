@@ -24,6 +24,7 @@ public class Genre {
         Genre genre = (Genre) o;
         return id == genre.id;
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

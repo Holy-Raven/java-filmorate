@@ -8,6 +8,7 @@ import lombok.Data;
 public class Friendship {
 
     private long first_user_id;
+
     private long second_user_id;
 
 }
