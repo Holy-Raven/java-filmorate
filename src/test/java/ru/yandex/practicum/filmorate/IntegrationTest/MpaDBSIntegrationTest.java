@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MpaDBSIntegrationTest {
 
     final MpaStorage mpaStorage;
+
     @Test
     void testFindById() {
 
@@ -33,6 +34,7 @@ public class MpaDBSIntegrationTest {
                         assertThat(mpa).hasFieldOrPropertyWithValue("id",id)
                                 .hasFieldOrPropertyWithValue("name", "NC-17"));
     }
+
     @Test
     void testFindAll() {
 
