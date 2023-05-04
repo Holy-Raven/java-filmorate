@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,18 +16,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorate.util.Constant.FILM_MAPPER;
-import static ru.yandex.practicum.filmorate.util.Constant.GENRE_MAPPER;
-
+import static ru.yandex.practicum.filmorate.util.Mappers.FILM_MAPPER;
+import static ru.yandex.practicum.filmorate.util.Mappers.GENRE_MAPPER;
+@Slf4j
+@RequiredArgsConstructor
 @Repository("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
 
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
-
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<Film> allFilms() {

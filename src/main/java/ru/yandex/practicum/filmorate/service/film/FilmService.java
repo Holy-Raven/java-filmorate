@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -19,20 +20,17 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FilmService implements FilmServiceInterface {
 
+    @Qualifier("FilmDbStorage")
     private final FilmStorage filmStorage;
+
     private final MpaStorage mpaStorage;
+
     private final GenreStorage genreStorage;
+
     private final LikeStorage likeStorage;
-
-
-    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, MpaStorage mpaStorage1, GenreStorage genreStorage, LikeStorage likeStorage) {
-        this.filmStorage = filmStorage;
-        this.mpaStorage = mpaStorage1;
-        this.genreStorage = genreStorage;
-        this.likeStorage = likeStorage;
-    }
 
     @Override
     public List<Film> findAll() {
@@ -155,7 +153,7 @@ public class FilmService implements FilmServiceInterface {
 
         long size = parseStringInLong(count);
 
-        log.info("List popular Films");
+        log.info("list of the {} most popular films", count);
         return findAll().stream()
                 .sorted((film1, film2) -> film2.getLikes().size()
                                         - film1.getLikes().size())

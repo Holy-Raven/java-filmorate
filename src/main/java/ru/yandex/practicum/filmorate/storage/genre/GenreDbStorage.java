@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.genre;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,15 +10,13 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorate.util.Constant.GENRE_MAPPER;
+import static ru.yandex.practicum.filmorate.util.Mappers.GENRE_MAPPER;
+
+@RequiredArgsConstructor
 @Repository("GenreStorage")
 public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public Optional<Genre> findById(long id) {

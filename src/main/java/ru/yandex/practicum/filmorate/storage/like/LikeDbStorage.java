@@ -1,20 +1,18 @@
 package ru.yandex.practicum.filmorate.storage.like;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
-import static ru.yandex.practicum.filmorate.util.Constant.LIKE_MAPPER;
+import static ru.yandex.practicum.filmorate.util.Mappers.LIKE_MAPPER;
 
+@RequiredArgsConstructor
 @Repository("LikeStorage")
 public class LikeDbStorage implements LikeStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public LikeDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public void addLikeFilm(Long film, Long user) {

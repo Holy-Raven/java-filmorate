@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -15,17 +15,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.yandex.practicum.filmorate.util.Constant.USER_MAPPER;
+import static ru.yandex.practicum.filmorate.util.Mappers.USER_MAPPER;
 
+@Slf4j
+@RequiredArgsConstructor
 @Repository("UserDbStorage")
 public class UserDbStorage implements UserStorage {
 
-    private final Logger log = LoggerFactory.getLogger(UserDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<User> allUsers() {

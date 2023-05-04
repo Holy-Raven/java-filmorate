@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,11 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
 
     private final FilmServiceInterface filmService;
-
-    @Autowired
-    public FilmController(FilmService filmService) {
-        this.filmService = filmService;
-    }
 
     // получение всех фильмов.
     @GetMapping

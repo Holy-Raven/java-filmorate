@@ -15,10 +15,6 @@ public class Film {
 
     private final Long id;
 
-    private Set<Long> likes = new HashSet<>();
-
-    private Set<Genre> genres = new HashSet<>();
-
     @NotNull(message = "Name of the film cannot be empty")
     @NotBlank(message = "Name of the film cannot be empty")
     private final String name;
@@ -28,10 +24,15 @@ public class Film {
 
     private final LocalDate releaseDate;
 
+    @NotNull
     @Positive(message = "The duration of the film should be positive")
     private final Integer duration;
 
     private final Mpa mpa;
+
+    private Set<Long> likes = new HashSet<>();
+
+    private Set<Genre> genres = new HashSet<>();
 
 }
 
