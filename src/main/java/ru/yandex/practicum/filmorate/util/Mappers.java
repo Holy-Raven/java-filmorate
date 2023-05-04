@@ -6,8 +6,6 @@ import ru.yandex.practicum.filmorate.model.*;
 import java.sql.ResultSet;
 
 public class Mappers {
-
-
     public static final RowMapper<User> USER_MAPPER = (ResultSet rs, int rowNum) -> {
 
         User user = new User(rs.getLong("user_id"),
