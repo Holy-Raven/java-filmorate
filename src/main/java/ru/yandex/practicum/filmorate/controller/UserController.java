@@ -1,28 +1,23 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.service.user.UserServiceInterface;
 
 import javax.validation.Valid;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserServiceInterface userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     // получение списка всех пользователей
     @GetMapping
@@ -50,7 +45,7 @@ public class UserController {
 
     // найти юзера по id
     @GetMapping("/{userId}")
-    public User findUserById(@PathVariable("userId") String userId) {
+    public Optional<User> findUserById(@PathVariable("userId") String userId) {
         return userService.findUserById(userId);
     }
 
